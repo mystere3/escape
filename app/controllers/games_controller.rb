@@ -37,34 +37,52 @@ before_action :authenticate_user!
   end
 
   def update
-    @game = Game.new
+    binding.pry
+    
+    @game = Game.find(params[:game_id])
+   
+    
     # @game.init
-    # binding.pry
+
     if params[:action_select].present? && params[:object_select].present?
-      # binding.pry
-      @game_message, @game = @game.act_on_object(params[:action_select], params[:object_select])
       binding.pry
 
-      # I'm just trying to get this to update ANY attibute
-      if @game.update_attributes(glassbox_open: true)
-        redirect_to game_url(@game), notice: 'Game was updated successfully'
-        binding.pry
-      else
-        @error_msg = 'There was an error updating the game'
-        binding.pry
-        redirect_to game_url(@game)
-      end
-      # if !@action_select.nil?
-      #   case params[:object_select]
-      #   when 'glassbox'
-      #     @game.glassbox_open = @action_result
-      #   when 'gloves'
-      #     @game.gloves_has = @action_result
-      #   else
-      #     @game_message = "Outside of scope."
-      #   end
+      @game_message, @action_result = @game.act_on_object(params[:action_select], params[:object_select])
 
+      
+      binding.pry
+      if !params[:action_select].nil?
+        case params[:object_select]
+        when 'glassbox'
+          @game.assign_attributes(:glassbox_open => @action_result)
+          binding.pry
+          @game.save
+          binding.pry
+        when 'gloves'
+          @game.assign_attributes(:gloves_has => @action_result)
+          binding.pry
+          @game.save
+          binding.pry
+        else
+          @game_message = "Outside of scope."
+        end
+        
+      end
+
+      # flash.keep(:notice)
+      # redirect_to game_url(@game)
+      redirect_to game_url(@game), notice: @game_message
+      # I'm just trying to get this to update ANY attibute
+      # @game.assign_attributes(:glassbox_open => true)
+      # if @game.save
+      #   redirect_to game_url(@game), notice: 'Game was updated successfully'
+      #   binding.pry
+      # else
+      #   @error_msg = 'There was an error updating the game'
+      #   binding.pry
+      #   redirect_to game_url(@game)
       # end
+
 
     end
     

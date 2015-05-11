@@ -49,10 +49,10 @@ class Game < ActiveRecord::Base
     if action == 'get' || action == 'use'
       self.get_gloves
     elsif action == 'open'
-      return "The gloves can't be opened.", self
+      return "The gloves can't be opened."
     elsif action == 'inspect'
       return "The gloves are yellow and appear to made entirely of a reasonably thick rubber. 
-        They look like a well made, pricy, pair of dishwashing gloves.", self
+        They look like a well made, pricy, pair of dishwashing gloves."
     end
   end
 
@@ -62,7 +62,7 @@ class Game < ActiveRecord::Base
       if self.gloves_has == true
         message = "You are already wearing the rubber gloves."
       else
-        self.gloves_has = true
+        has_gloves = true
         message = "You put on the rubber gloves."
       end
     else
@@ -70,12 +70,11 @@ class Game < ActiveRecord::Base
     end
     
     binding.pry
-    return message, self
+    return message, has_gloves
   end
 
   def glassbox_action(action)
-      self.glassbox_open = true
-      return "Glassbox is open.", self
+      return "Glassbox is open.", true
   end
 
 end
