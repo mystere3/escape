@@ -1,0 +1,20 @@
+<%= link_to 'Return to games list', games_path %>
+<h1>Escape! </h1>
+
+<%= form_tag('/act_on_object', method: :get) do %>
+
+  <%= select_tag(:action_select, options_for_select([["Get", :get], ["Use", :use], ["Open", :open], ["Inspect", :inspect]])) %>
+ 
+  <%= select_tag(:object_select, options_for_select([["Gloves", :gloves], ['Mop', :mop], ['Knife', :knife], ["Door", :door], ["Desk", :desk], ["Pen", :pen], ["Paper", :paper], ["Key", :key], ["Glass Box", :glassbox], ["Circuit Box", :circuitbox], ["Outlet", :outlet], ["Puzzle Box", :puzzlebox], ["Nameless Horror", :horror]])) %>
+
+
+  <div><%= submit_tag 'Commit Action' %></div>
+<% end %>
+
+<% if @game_message %>
+  <%= @game_message %>
+<% end %>
+<%= flash[:notice] if flash[:notice] %>
+<% if @error_msg %>
+<%= @error_msg %>
+<% end %>

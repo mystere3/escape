@@ -1,0 +1,16 @@
+<h1>Welcome#index</h1>
+<p>Find me in app/views/welcome/index.html.erb</p>
+
+
+
+<% if current_user %>
+  <%= form_for(current_user.game) do |f| %>
+    <%= f.submit "Create new game" %>
+  <% end %>
+  <% if !current_user.game_id.nil? %>
+    <%= link_to( 'New Game', new_game_path, data: { confirm: "This will delete your current save, continue?"}) %>
+    <%= link_to( 'Continue Game', show_game_path(current_user.game_id)) %>
+  <% else %>
+    <%=link_to( 'New Game', new_game_path, class: "my-button hvr-pulse-shrink") %>
+  <% end %>
+<% end %>

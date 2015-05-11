@@ -1,0 +1,20 @@
+<h1> Games Index</h1>
+
+
+  <%= form_for(@game) do |f| %>
+    <%= f.submit "Create new game" %>
+  <% end %>
+<ul>
+  <% current_user.games.each do |game| %>
+
+    <li>
+      Game created <%= time_ago_in_words(game.created_at) %> ago Play Delete
+      <%= link_to 'Play', game_path(game) %>
+      <%= link_to 'Delete Game', game_path(game),
+            method: :delete, 
+            data: { confirm: 'Are you sure?' } %>
+    </li>
+
+    
+  <% end %>
+</ul>
