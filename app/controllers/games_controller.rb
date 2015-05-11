@@ -44,13 +44,15 @@ before_action :authenticate_user!
       # binding.pry
       @game_message, @game = @game.act_on_object(params[:action_select], params[:object_select])
       binding.pry
+
+      # I'm just trying to get this to update ANY attibute
       if @game.update_attributes(glassbox_open: true)
-        render :show, notice: 'Game was updated successfully'
+        redirect_to game_url(@game), notice: 'Game was updated successfully'
         binding.pry
       else
         @error_msg = 'There was an error updating the game'
         binding.pry
-        render :show
+        redirect_to game_url(@game)
       end
       # if !@action_select.nil?
       #   case params[:object_select]
