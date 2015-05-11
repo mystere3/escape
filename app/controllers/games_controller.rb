@@ -14,13 +14,11 @@ before_action :authenticate_user!
 
   def new
     @game = Game.new
-    binding.pry
   end
 
   def create
     @game = Game.new
     @game.user_id = current_user.id
-    binding.pry
 
     if @game.save
       redirect_to game_path(@game), notice: 'New game started.'
@@ -37,7 +35,6 @@ before_action :authenticate_user!
   end
 
   def update
-    binding.pry
     
     @game = Game.find(params[:game_id])
    
@@ -45,28 +42,42 @@ before_action :authenticate_user!
     # @game.init
 
     if params[:action_select].present? && params[:object_select].present?
-      binding.pry
 
-      @game_message, @action_result = @game.act_on_object(params[:action_select], params[:object_select])
+      @game_message, @action_result, @secondary_result = @game.act_on_object(params[:action_select], params[:object_select], params[:use_on])
 
-      
-      binding.pry
-      if !params[:action_select].nil?
+      if !params[:action_select].nil? && !@action_result.nil?
         case params[:object_select]
         when 'glassbox'
           @game.assign_attributes(:glassbox_open => @action_result)
-          binding.pry
-          @game.save
-          binding.pry
+          # @game.save
         when 'gloves'
           @game.assign_attributes(:gloves_has => @action_result)
-          binding.pry
-          @game.save
-          binding.pry
+          # @game.save
+        when 'mop'
+          @game.assign_attributes(:mop_has => @action_result)
+          # @game.save
+        when 'knife'
+          @game.assign_attributes(:knife_has => @action_result)
         else
-          @game_message = "Outside of scope."
+          @game_message = "Object outside of scope."
         end
-        
+
+        if !@secondary_result.nil?
+          case @secondary_result
+          when 'floor_dry'
+            @game.assign_attributes(:floor_wet => false)
+          when 'glassbox_open'
+            @game.assign_attributes(:glassbox_open => true)
+          when 'horror_staggered'
+            @game.assign_attributes(:horror_staggered => true, :end_count => 3)
+          when 'circuitbox_open'
+            @game.assign_attributes(:circuitbox_open => true)
+          else
+            # do nothing.
+          end
+          
+        end
+        @game.save
       end
 
       # flash.keep(:notice)
@@ -85,8 +96,6 @@ before_action :authenticate_user!
 
 
     end
-    
-    # render :show
   end
 
   def destroy
@@ -94,11 +103,6 @@ before_action :authenticate_user!
     @game.destroy
     
     redirect_to games_path, notice: 'Game save deleted.'
-  end
-
-    def game_params
-    # binding.pry
-    params.require(:game).permit(:name, :student_id)
   end
 
 end
