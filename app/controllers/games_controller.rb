@@ -116,6 +116,13 @@ before_action :authenticate_user!
           @game.assign_attributes(:key_has => @action_result)
         when 'glassbox'
           @game.assign_attributes(:glassbox_open => @action_result)
+        when 'circuitbox'
+          if @action_result == true
+            @game.assign_attributes(:circuitbox_open => @action_result)
+          elsif @action_result == 'circuits'
+            return redirect_to circuitbox_path(@game)
+          end
+          
         else
           @game_message = "Object outside of scope."
         end

@@ -57,6 +57,8 @@ class Game < ActiveRecord::Base
       self.key_action(action, use_on)
     when 'glassbox'
       self.glassbox_action(action)
+    when 'circuitbox'
+      self.circuitbox_action(action)
     else
 
     end
@@ -544,6 +546,23 @@ class Game < ActiveRecord::Base
       message << "There is a pair of yellow rubber gloves inside the box."
     end
     return message
+  end
+
+  def circuitbox_action(action)
+    case action
+    when 'get'
+      return "The circuit box is embedded in the wall and can't be removed"
+    when 'use'
+      self.use_circuitbox
+    end
+  end
+
+  def use_circuitbox
+    if self.circuitbox_open
+      return " ", 'circuits'
+    else
+      return "The circuit box is closed."
+    end
   end
 
 end

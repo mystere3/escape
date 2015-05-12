@@ -14,6 +14,7 @@ Rails.application.routes.draw do
   get '/endgame/:id', to: 'games#endgame', as: 'endgame'
   get '/paper_content/:id', to: 'games#paper_content', as: 'paper_content'
   get '/puzzlebox/:id', to: 'games#puzzlebox', as: 'puzzlebox'
+  get '/circuitbox/:id', to: 'game#circuitbox', as: 'circuitbox'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

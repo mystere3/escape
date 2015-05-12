@@ -1,0 +1,13 @@
+<h1>Circuit Box</h1>
+
+<%= form_tag('/act_on_object', method: :get) do %>
+  <table>
+    <tr>
+      <td><%= text_field :puzzlebox, :attempt %></td>
+    </tr>
+    <%= hidden_field_tag :game_id, params[:id] %>
+
+    <tr><td><%= submit_tag 'Enter' %></td></tr>
+  </table>
+
+<% end %>
