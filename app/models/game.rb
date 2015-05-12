@@ -41,8 +41,6 @@ class Game < ActiveRecord::Base
       self.gloves_action(action)
     when 'mop'
       self.mop_action(action, use_on)
-    when 'glassbox'
-      self.glassbox_action(action)
     when 'knife'
       self.knife_action(action, use_on)
     when 'door'
@@ -55,29 +53,13 @@ class Game < ActiveRecord::Base
       self.paper_action(action, use_on)
     when 'puzzlebox'
       self.puzzlebox_action(action)
+    when 'key'
+      self.key_action(action, use_on)
+    when 'glassbox'
+      self.glassbox_action(action)
     else
 
     end
-
-    # if object == 'gloves'
-    #   self.gloves_action(action)
-    # elsif object == 'mop'
-    #   self.mop_action(action, use_on)
-    # elsif object == 'glassbox'
-    #   self.glassbox_action(action)
-    # elsif object == 'knife'
-    #   self.knife_action(action, use_on)
-    # elsif object == 'door'
-    #   self.door_action(action)
-    # elsif object == 'desk'
-    #   self.desk_action(action)
-    # elsif object == 'pen'
-    #   self.pen_action(action, use_on)
-    # elsif object == 'paper'
-    #   self.paper_action(action, use_on)
-    # elsif condition
-    # else
-    # end
   end
 
   def gloves_action(action)
@@ -470,8 +452,105 @@ class Game < ActiveRecord::Base
     end
   end
 
+  def key_action(action, use_on)
+    case action
+    when 'get'
+      self.get_key
+    when 'use', 'open'
+      self.use_key(use_on)
+    when 'inspect'
+      return "It's a pretty standard key. Made of metal, round head, grooves along the length, teeth along the bottom."
+    else
+      return "Key action outside of scope."
+    end
+  end
+
+  def get_key
+    if self.key_has
+      return "You already have the key."
+    else
+      if self.puzzlebox_open
+        return "You take the key from inside the box.", true
+      else
+        return "You don't see a key in the room."
+      end
+    end
+  end
+
+  def use_key(use_on)
+    if self.key_has
+      case use_on
+      when 'door'
+        if self.door_locked == false
+          return "The door is already unlocked."
+        else
+          if self.floor_wet && self.outlets_on
+            # still has key, door still locked. Costs an action even though fail.
+            return "When you step into the puddle to try the key in the door you recieve an electric shock and are knocked back away from the door.", true
+          else
+            # still has key, door unlocked
+            return "The key slides in the lock easily. You unlock the door.", true, 'door_unlocked'
+          end
+        end
+      when 'glassbox'
+        return "The key doesn't fit in the glass box's lock."
+      when 'circuitbox'
+        return "The circuit box doesn't have a lock to use a key on."
+      when 'puzzlebox'
+        return "The puzzle box doesn't have a keyed lock."
+      else
+        return "You can't use the key with the #{use_on}"
+      end
+    else
+      return "You don't have the key."
+    end
+  end
+
   def glassbox_action(action)
-    return "Glassbox is open.", true
+    case action
+    when 'get'
+      return "The glass box is embedded in the wall and can't be removed."
+    when 'use', 'open'
+      self.use_glassbox
+    when 'inspect'
+      self.inspect_glassbox
+    end
+  end
+
+  def use_glassbox
+    if self.glassbox_open == false
+      message = "The glass box is locked and securely attached to the wall."
+    else
+      message = "The glass box has been smashed open allowing access to its contents."
+      if self.gloves_has
+        message << "You have taken the rubber gloves that were in here."
+      else
+        message << "There is a pair of rubber gloves inside."
+      end
+    end
+    return message
+  end
+
+  def inspect_glassbox
+    message = "This is a 'glass box' embedded in the wall much like one you would see in many buildings containing emergency fire equipment. It has a metal door with a keyable lock. "
+    if self.glassbox_open == false
+      message << "A large portion of the door is made of glass, revealing the glass box's contents."
+    else
+      message << "The glass has been broken out of the door allowing access to the box. "
+    end
+    if self.gloves_has
+      message << "You have taken the rubber gloves that were in here. There is nothing else in the box."
+    else
+      message << "There is a pair of yellow rubber gloves inside the box."
+    end
+    return message
   end
 
 end
+
+
+
+
+
+
+

@@ -79,9 +79,7 @@ before_action :authenticate_user!
 
       if !@action_result.nil?
         case params[:object_select]
-        when 'glassbox'
-          @game.assign_attributes(:glassbox_open => @action_result)
-          # @game.save
+
         when 'gloves'
           @game.assign_attributes(:gloves_has => @action_result)
           # @game.save
@@ -114,6 +112,10 @@ before_action :authenticate_user!
           elsif @action_result == 'puzzle_attempt'
             return redirect_to puzzlebox_path(@game)
           end
+        when 'key'
+          @game.assign_attributes(:key_has => @action_result)
+        when 'glassbox'
+          @game.assign_attributes(:glassbox_open => @action_result)
         else
           @game_message = "Object outside of scope."
         end
@@ -128,6 +130,8 @@ before_action :authenticate_user!
             @game.assign_attributes(:horror_staggered => true, :end_count => 3)
           when 'circuitbox_open'
             @game.assign_attributes(:circuitbox_open => true)
+          when 'door_unlocked'
+            @game.assign_attributes(:door_locked => false)
           else
             # do nothing.
           end
