@@ -421,6 +421,55 @@ class Game < ActiveRecord::Base
     end
   end
 
+  def get_puzzlebox
+    if self.puzzlebox_has
+      return "You already have the puzzle box."
+    else
+      return "You take the puzzle box.", true
+    end
+  end
+
+  def use_puzzlebox
+    if self.puzzlebox_open
+      message = "The puzzle box is already open. "
+      if self.key_has == false
+        message << "The key is still inside."
+      end
+      return message
+    else
+      return " ", 'puzzle_attempt'
+    end
+  end
+
+  def inspect_puzzlebox
+    description = "This puzzle box has an image of a key and 5 buttons, each labelled with a letter, on the lid. The buttons, in order, are labelled: E U N Q. "
+    if self.puzzlebox_open
+      description << "Having solved the puzzle, the lid is now open. "
+      if self.key_has
+        description << "You have taken the key that was in the box. There is nothing in here now. "
+      else
+        description << "There is a key inside the box. "
+      end
+    else
+      description << "The box is locked shut."
+    end
+    return description
+  end
+
+  def attempt_puzzle(entry)
+    entry.tr!(' ,.;:()[]{}"\'!@#$%^&*|/><?`~\\', '')
+    entry.upcase!
+    if entry.length < 5
+      return "You enter '#{entry} but the box fails to open.", false
+    else
+      if entry == 'QUEEN'
+        return "You enter #{entry}. The box emits a click and then opens. Inside you see a key.", true
+      else
+        return "You enter '#{entry} but the box fails to open.", false
+      end
+    end
+  end
+
   def glassbox_action(action)
     return "Glassbox is open.", true
   end

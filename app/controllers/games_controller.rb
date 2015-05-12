@@ -49,6 +49,30 @@ before_action :authenticate_user!
       return redirect_to game_url(@game), notice: @game_message, alert: @horror_message
     end
 
+    if params[:puzzlebox].present?
+      puzzle_guess = params[:puzzlebox]
+      @game_message, @attempt_result = @game.attempt_puzzle(puzzle_guess[:attempt])
+      @game.assign_attributes(:puzzlebox_open => @attempt_result)
+
+      @remaining_turns = @game.turns_remain - 1
+      @game.assign_attributes(:turns_remain => @remaining_turns)
+      if @game.end_count > 0
+        @end_countdown = @game.end_count - 1
+        @game.assign_attributes(:end_count => @end_countdown)
+      end
+      if @game.turns_remain <= 0 && @game.end_count <= 0
+        @game.assign_attributes(:game_over => true)
+      end
+
+      @game.save
+
+      if @game.game_over
+        return redirect_to endgame_path(@game)
+      end
+
+      return redirect_to game_url(@game), notice: @game_message, alert: @horror_message
+    end
+
     if params[:action_select].present? && params[:object_select].present?
 
       @game_message, @action_result, @secondary_result = @game.act_on_object(params[:action_select], params[:object_select], params[:use_on])
@@ -83,6 +107,12 @@ before_action :authenticate_user!
             @game.assign_attributes(:paper_has => true)
           elsif @action_result == 'write_paper'
             return redirect_to paper_content_path(@game)
+          end
+        when 'puzzlebox'
+          if @action_result == true
+            @game.assign_attributes(:puzzlebox_has => true)
+          elsif @action_result == 'puzzle_attempt'
+            return redirect_to puzzlebox_path(@game)
           end
         else
           @game_message = "Object outside of scope."
