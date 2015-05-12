@@ -1,0 +1,21 @@
+<h1>Paper Content</h1>
+<br>
+<%= @game.paper_content %>
+<br>
+<%= form_tag('/act_on_object', method: :get) do %>
+  <table>
+    <tr>
+      <td><%= label_tag 'What would you like to write on the paper?' %></td>
+      
+    </tr>
+    <tr>
+      <td><%= text_area :paper, :content, :cols => "60", :rows => "10" %></td>
+    </tr>
+
+
+    <%= hidden_field_tag :game_id, params[:id] %>
+
+    <tr><td><%= submit_tag 'Write on Paper' %></td></tr>
+  </table>
+
+<% end %>

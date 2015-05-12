@@ -11,6 +11,9 @@ Rails.application.routes.draw do
 
   get '/act_on_object', to: 'games#update'
 
+  get '/endgame/:id', to: 'games#endgame', as: 'endgame'
+  get '/paper_content/:id', to: 'games#paper_content', as: 'paper_content'
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

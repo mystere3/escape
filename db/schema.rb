@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150510195623) do
+ActiveRecord::Schema.define(version: 20150512041414) do
 
   create_table "games", force: :cascade do |t|
     t.boolean  "gloves_has"
@@ -36,10 +36,10 @@ ActiveRecord::Schema.define(version: 20150510195623) do
     t.integer  "turns_remain"
     t.boolean  "game_over"
     t.integer  "end_count"
-    t.datetime "created_at",                            null: false
-    t.datetime "updated_at",                            null: false
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
     t.integer  "user_id"
-    t.string   "objects_array",    default: "--- []\n"
+    t.boolean  "puzzlebox_has"
   end
 
   create_table "users", force: :cascade do |t|

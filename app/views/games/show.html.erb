@@ -1,6 +1,10 @@
 <%= link_to 'Return to games list', games_path %>
 <h1>Escape! </h1>
 
+<%= flash[:notice] if flash[:notice] %><br>
+
+<%= flash[:alert] if flash[:alert] %> <br>
+
 <%= form_tag('/act_on_object', method: :get) do %>
   <table>
     <tr>
@@ -21,6 +25,32 @@
   </table>
 <% end %>
 
-<%= flash[:notice] if flash[:notice] %>
 
-<%= flash[:alert] if flash[:alert] %> 
+<br>
+Turns remain: <%= @game.turns_remain %><br>
+End count: <%= @game.end_count %><br>
+<br>
+Your inventory:
+<ul>
+  <% if @game.gloves_has %>
+    <li>Gloves</li>
+  <% end %>
+  <% if @game.mop_has %>
+    <li>Mop</li>
+  <% end %>
+  <% if @game.knife_has %>
+    <li>Knife</li>
+  <% end %>
+  <% if @game.pen_has %>
+    <li>Pen</li>
+  <% end %>
+  <% if @game.paper_has %>
+    <li>Paper</li>
+  <% end %>
+  <% if @game.key_has %>
+    <li>Key</li>
+  <% end %>
+</ul>
+
+
+

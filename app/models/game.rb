@@ -1,7 +1,7 @@
 class Game < ActiveRecord::Base
   belongs_to :user
   after_initialize :init
-  serialize :objects_hash
+  # serialize :objects_hash
 
   def init
     self.gloves_has = false if self.gloves_has.nil?
@@ -30,23 +30,54 @@ class Game < ActiveRecord::Base
     # self.objects_array << "Gloves"
     # self.objects_array << "Mop"
 
-    # ["Gloves", "Mop", "Knife", "Door", "Desk", "Pen", "Paper", "Key", "Glass Box", "Circuit Box", "Outlet", "Puzzle Box", "Nameless Horror"]
-            
+    # ["Gloves", "Mop", "Knife", "Door", "Desk", "Pen", "Paper", "Key", "Glass Box", "Circuit Box", "Outlet", "Puzzle Box", "Nameless Horror"]     
   end
 
 
   def act_on_object(action, object, use_on=nil)
-    # binding.pry
-    if object == 'gloves'
-      # binding.pry
+
+    case object
+    when 'gloves'
       self.gloves_action(action)
-    elsif object == 'mop'
+    when 'mop'
       self.mop_action(action, use_on)
-    elsif object == 'glassbox'
+    when 'glassbox'
       self.glassbox_action(action)
-    elsif object == 'knife'
-        self.knife_action(action, use_on)
+    when 'knife'
+      self.knife_action(action, use_on)
+    when 'door'
+      self.door_action(action)
+    when 'desk'
+      self.desk_action(action)
+    when 'pen'
+      self.pen_action(action, use_on)
+    when 'paper'
+      self.paper_action(action, use_on)
+    when 'puzzlebox'
+      self.puzzlebox_action(action)
+    else
+
     end
+
+    # if object == 'gloves'
+    #   self.gloves_action(action)
+    # elsif object == 'mop'
+    #   self.mop_action(action, use_on)
+    # elsif object == 'glassbox'
+    #   self.glassbox_action(action)
+    # elsif object == 'knife'
+    #   self.knife_action(action, use_on)
+    # elsif object == 'door'
+    #   self.door_action(action)
+    # elsif object == 'desk'
+    #   self.desk_action(action)
+    # elsif object == 'pen'
+    #   self.pen_action(action, use_on)
+    # elsif object == 'paper'
+    #   self.paper_action(action, use_on)
+    # elsif condition
+    # else
+    # end
   end
 
   def gloves_action(action)
@@ -119,7 +150,13 @@ class Game < ActiveRecord::Base
       when 'glassbox'
         if self.glassbox_open == true
           message = "The glass box is already open so striking it with the mop would be pointless. It is also perfectly dry."
-          message << self.gloves_has ? "\nThere is nothing else in the box." : "\nThe rubber gloves are in the glass box."
+          # Not sure why the following line doesn't work, claims no implicit conversion of false to string.
+          # message << self.gloves_has ? "\nThere is nothing else in the box." : "\nThe rubber gloves are in the glass box."
+          if self.gloves_has
+            message << "\nThere is nothing else in the box."
+          else
+            message << "\nThe rubber gloves are in the glass box."
+          end
           return message
         else
           # still have mop, glassbox_open = true
@@ -196,6 +233,191 @@ class Game < ActiveRecord::Base
       end
     else
       return "You don't have the knife."
+    end
+  end
+
+  def door_action(action)
+    case action
+    when 'get'
+      return "You can't get the door."
+    when 'use', 'open'
+        self.open_door
+      when 'inspect'
+        self.inspect_door
+    else  
+      return "Door action outside of scope."
+    end
+  end
+
+  def open_door
+    if self.door_locked
+      if self.floor_wet && self.outlets_on
+        return "When your bare feet touch the water on the floor as you go to the door you are jolted by an electric shock and thrown back away from the door."
+      else
+        return "You try the handle but the door is locked."
+      end
+    else
+      # door_open
+      return "The unlocked doorhandle turns and you open the door.", 'door_open'
+    end
+  end
+
+  def inspect_door
+    message = "This is an old style door made of solid wood that won't break easily. The door jamb also appears to be constructed of quality materials that will withstand considerable punishment. There is a keyhole below the doorhandle. "
+    if self.door_open
+      message << "The door is open."
+    elsif self.floor_wet && self.outlets_on
+      message << "The door is closed but you have not been able to test to see if it is locked."
+    elsif self.door_locked
+      message << "The door is closed and appears to be locked."
+    else
+      message << "The door is closed but unlocked."
+    end
+  end
+
+  def desk_action(action)
+    case action
+    when 'get'
+      return "You can't get the desk."
+    when 'use'
+      return "Spending time sitting at a desk doesn't seem like the wisest use of your time."
+    when 'open'
+      self.open_desk
+    when 'inspect'
+      self.inspect_desk
+    else
+      return "Desk action outside of scope."
+    end
+  end
+
+  def open_desk
+    if self.desk_open
+      return "The desk drawer is already open."
+    else
+      return "You open the desk drawer. Inside you see a pen and a knife with an ivory handle and 4 inch blade. The blade tip is considerbly scratched and dinged.", true
+    end
+  end
+
+  def inspect_desk
+    description = "This is a beautiful mohagany desk that has been very well taken care of. "
+    if self.paper_has == false
+      description << "There is a blank piece of paper on top of the desk. "
+    end
+    if self.puzzlebox_has == false
+      description << "There is a puzzle box on top of the desk. "
+    end
+    if self.desk_open
+      description << "There is an open drawer in the front of the desk. "
+      if self.pen_has == false
+        description << "There is a pen in the drawer. "
+      end
+      if self.knife_has == false
+        description << "There is an ivory handled 4 inch knife in the drawer. "
+      end
+    else
+      description << "There is a closed drawer in the front of the desk."
+    end
+    return description
+  end
+
+  def pen_action(action, use_on)
+    case action
+    when 'get'
+      self.get_pen
+    when 'use'
+      self.use_pen(use_on)
+    when 'open'
+      return "You can't open this pen."
+    when 'inspect'
+      self.inspect_pen
+    else
+      return "Pen action outside of scope."
+    end
+  end
+
+  def get_pen
+    if self.desk_open
+      if self.pen_has
+        return "You already have the pen."
+      else
+        return "You take the pen.", true
+      end
+    else
+      return "You don't see a pen in the room."
+    end
+  end
+
+  def use_pen(use_on)
+    if self.pen_has
+      if use_on == 'paper'
+        return " ", "write_paper"
+      else
+        return "You scribble on the #{use_on}"
+      end
+    else
+      return "You don't have the pen."
+    end
+  end
+
+  def inspect_pen
+    if self.desk_open
+      return "This is a fairly expensive but tasteful refillable ball point pen."
+    else
+      return "You don't see a pen in the room."
+    end
+  end
+
+  def paper_action(action, use_on)
+    case action
+    when 'get'
+      self.get_paper
+    when 'use'
+      self.use_paper(use_on)
+    when 'open'
+      return "The paper can't be opened, it's an uncrumpled sheet with no folds."
+    when 'inspect'
+      self.inspect_paper
+    end
+  end
+
+  def get_paper
+    if paper_has
+      return "You already have the piece of paper."
+    else
+      return "You now have a blank piece of paper.", true
+    end
+  end
+
+  def use_paper(use_on)
+    if use_on == 'pen'
+      if self.pen_has
+        return " ", "write_paper"
+      else
+        return "You don't have the pen."
+      end
+    elsif use_on == ""
+      return "You can't use paper with or on nothing."
+    else
+      return "You can't use the paper with #{use_on}"
+    end
+  end
+
+  def inspect_paper
+    if self.paper_content.length == 0
+      return "It is a blank piece of 28lb bright white paper. Probably from Staples."
+    else
+      return "On this paper you have written: " << self.paper_content
+    end
+  end
+
+  def puzzlebox_action(action)
+    case action
+    when 'get'
+      self.get_puzzlebox
+    when 'use', 'open'
+      self.use_puzzlebox
+    when 'inspect'
+      self.inspect_puzzlebox
     end
   end
 
