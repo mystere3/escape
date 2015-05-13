@@ -2,8 +2,9 @@
 
 The puzzle box can't be opened but there is no lock.<br>
 On the top of the box is a picture of a key and five buttons.<br>
-Each button has a letter printed on it as follows:<br>
-<h2>E  U  N  Q</h2><br>
+Four buttons each have a single letter printed on them as follows:
+<h2>E  U  N  Q</h2>
+Just below these buttons is an additional button labelled 'ENTER'<br><br>
 Type the letters in the order you press them:<br>
 
 <%= form_tag('/act_on_object', method: :get) do %>
@@ -13,7 +14,7 @@ Type the letters in the order you press them:<br>
     </tr>
     <%= hidden_field_tag :game_id, params[:id] %>
 
-    <tr><td><%= submit_tag 'Enter' %></td></tr>
+    <tr><td><%= submit_tag 'ENTER' %></td></tr>
   </table>
 
 <% end %>

@@ -26,26 +26,54 @@ before_action :authenticate_user!
       flash[:alert] = "There was an error starting new game."
       render :root
     end
-
   end
 
   def edit
     
-
   end
 
   def update
-    
     @game = Game.find(params[:game_id])
     
-    # @game.init
     if params[:paper].present?
       all_writing = @game.paper_content
       content_hash = params[:paper]
-      all_writing << content_hash[:content]
+      all_writing << content_hash[:content] << " "
       @game.assign_attributes(:paper_content => all_writing)
       @game.save
       @game_message = "You wrote on the paper."
+      return redirect_to game_url(@game), notice: @game_message, alert: @horror_message
+    end
+
+    if params[:outlets].present? && params[:lights].present?
+      lights_message, lights_on = @game.lights_toggle(params[:lights])
+      outlets_message, outlets_on = @game.outlets_toggle(params[:outlets])
+      @game_message = lights_message + outlets_message
+      @game.assign_attributes(:lights_on => lights_on, :outlets_on => outlets_on)
+      if @game.lights_on == false
+        @game.assign_attributes(:game_over => true)
+      end
+
+      @remaining_turns = @game.turns_remain - 1
+      @game.assign_attributes(:turns_remain => @remaining_turns)
+      @horror_message, in_room = @game.move_horror
+      if in_room
+        @game.assign_attributes(:horror_in_room => true)
+      end
+      if @game.end_count > 0
+        @end_countdown = @game.end_count - 1
+        @game.assign_attributes(:end_count => @end_countdown)
+      end
+      if @game.turns_remain <= 0 && @game.end_count <= 0
+        @game.assign_attributes(:game_over => true)
+      end
+
+      @game.save
+
+      if @game.game_over
+        return redirect_to endgame_path(@game)
+      end
+
       return redirect_to game_url(@game), notice: @game_message, alert: @horror_message
     end
 
@@ -56,6 +84,10 @@ before_action :authenticate_user!
 
       @remaining_turns = @game.turns_remain - 1
       @game.assign_attributes(:turns_remain => @remaining_turns)
+      @horror_message, in_room = @game.move_horror
+      if in_room
+        @game.assign_attributes(:horror_in_room => true)
+      end
       if @game.end_count > 0
         @end_countdown = @game.end_count - 1
         @game.assign_attributes(:end_count => @end_countdown)
@@ -134,7 +166,9 @@ before_action :authenticate_user!
           when 'glassbox_open'
             @game.assign_attributes(:glassbox_open => true)
           when 'horror_staggered'
-            @game.assign_attributes(:horror_staggered => true, :end_count => 3)
+            @game.assign_attributes(:horror_staggered => true, :end_count => 4)
+          when 'horror_stabbed'
+            @game.assign_attributes(:horror_stabbed => true, :end_count => 4)
           when 'circuitbox_open'
             @game.assign_attributes(:circuitbox_open => true)
           when 'door_unlocked'
@@ -146,6 +180,10 @@ before_action :authenticate_user!
         end
         @remaining_turns = @game.turns_remain - 1
         @game.assign_attributes(:turns_remain => @remaining_turns)
+        @horror_message, in_room = @game.move_horror
+        if in_room
+          @game.assign_attributes(:horror_in_room => true)
+        end
         if @game.end_count > 0
           @end_countdown = @game.end_count - 1
           @game.assign_attributes(:end_count => @end_countdown)
@@ -162,20 +200,7 @@ before_action :authenticate_user!
         end
       end
 
-      # flash.keep(:notice)
-      # redirect_to game_url(@game)
       redirect_to game_url(@game), notice: @game_message, alert: @horror_message
-      # I'm just trying to get this to update ANY attibute
-      # @game.assign_attributes(:glassbox_open => true)
-      # if @game.save
-      #   redirect_to game_url(@game), notice: 'Game was updated successfully'
-      #   binding.pry
-      # else
-      #   @error_msg = 'There was an error updating the game'
-      #   binding.pry
-      #   redirect_to game_url(@game)
-      # end
-
 
     end
   end
@@ -188,10 +213,15 @@ before_action :authenticate_user!
   end
 
   def endgame
-    
+    @game = Game.find(params[:id])
+    @closing_story = @game.end_game
   end
 
   def paper_content
+    @game = Game.find(params[:id])
+  end
+
+  def circuitbox
     @game = Game.find(params[:id])
   end
 

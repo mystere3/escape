@@ -13,6 +13,7 @@ class Game < ActiveRecord::Base
     self.pen_has = false if self.pen_has.nil?
     self.paper_has = false if self.paper_has.nil?
     self.paper_content ||= ""
+    self.puzzlebox_has = false if self.puzzlebox_has.nil?
     self.puzzlebox_open = false if self.puzzlebox_open.nil?
     self.key_has = false if self.key_has.nil?
     self.glassbox_open = false if self.glassbox_open.nil?
@@ -59,6 +60,8 @@ class Game < ActiveRecord::Base
       self.glassbox_action(action)
     when 'circuitbox'
       self.circuitbox_action(action)
+    when 'outlet'
+      self.outlet_action(action)
     else
 
     end
@@ -174,7 +177,7 @@ class Game < ActiveRecord::Base
     when 'open'
       return "This knife can't be opened."
     when 'inspect'
-      return "The knife is sufficiently sharp, has an weathered ivory handle and a 4 inch blade. The tip has quite a few scrapes and dings."
+      self.inspect_knife
     else
       return "Knife action outside of scope."
     end
@@ -217,6 +220,14 @@ class Game < ActiveRecord::Base
       end
     else
       return "You don't have the knife."
+    end
+  end
+
+  def inspect_knife
+    if self.desk_open
+      return "The knife is sufficiently sharp, has an weathered ivory handle and a 4 inch blade. The tip has quite a few scrapes and dings."
+    else
+      return "You don't see a knife in the room."
     end
   end
 
@@ -285,21 +296,25 @@ class Game < ActiveRecord::Base
   def inspect_desk
     description = "This is a beautiful mohagany desk that has been very well taken care of. "
     if self.paper_has == false
-      description << "There is a blank piece of paper on top of the desk. "
+      if self.paper_content.length == 0
+        description << "A blank piece of paper lays on top of the desk. "
+      else
+        description << 'There is a piece of paper on the desk on which you have written "' << self.paper_content << '". '
+      end
     end
     if self.puzzlebox_has == false
       description << "There is a puzzle box on top of the desk. "
     end
     if self.desk_open
-      description << "There is an open drawer in the front of the desk. "
+      description << "The drawer on the front of the desk is open.  "
       if self.pen_has == false
-        description << "There is a pen in the drawer. "
+        description << "A pen is in the drawer. "
       end
       if self.knife_has == false
         description << "There is an ivory handled 4 inch knife in the drawer. "
       end
     else
-      description << "There is a closed drawer in the front of the desk."
+      description << "The drawer on the front of the desk is closed."
     end
     return description
   end
@@ -426,7 +441,7 @@ class Game < ActiveRecord::Base
   end
 
   def inspect_puzzlebox
-    description = "This puzzle box has an image of a key and 5 buttons, each labelled with a letter, on the lid. The buttons, in order, are labelled: E U N Q. "
+    description = "This puzzle box has an image of a key and five buttons on the lid. Four are labelled with letters. These buttons, in order left to right, are labelled: E U N Q. In front of the buttons is an additional button labelled ENTER. "
     if self.puzzlebox_open
       description << "Having solved the puzzle, the lid is now open. "
       if self.key_has
@@ -441,15 +456,16 @@ class Game < ActiveRecord::Base
   end
 
   def attempt_puzzle(entry)
-    entry.tr!(' ,.;:()[]{}"\'!@#$%^&*|/><?`~\\', '')
+    
     entry.upcase!
+    entry.tr!(' ,.;:()[]{}"\'!@#$%^&*|/><?`~\-_1234567890=+WRTYIOPASDFGHJKLZXCVBM', '')
     if entry.length < 5
-      return "You enter '#{entry} but the box fails to open.", false
+      return "You enter '#{entry}' but the box fails to open.", false
     else
       if entry == 'QUEEN'
         return "You enter #{entry}. The box emits a click and then opens. Inside you see a key.", true
       else
-        return "You enter '#{entry} but the box fails to open.", false
+        return "You enter '#{entry}' but the box fails to open.", false
       end
     end
   end
@@ -554,6 +570,12 @@ class Game < ActiveRecord::Base
       return "The circuit box is embedded in the wall and can't be removed"
     when 'use'
       self.use_circuitbox
+    when 'open'
+      self.open_circuitbox
+    when 'inspect'
+      self.inspect_circuitbox
+    else
+      return "Circuitbox action outside of scope."
     end
   end
 
@@ -562,6 +584,186 @@ class Game < ActiveRecord::Base
       return " ", 'circuits'
     else
       return "The circuit box is closed."
+    end
+  end
+
+  def lights_toggle(lights)
+    # binding.pry
+    if self.lights_on
+      if lights == 'on'
+        # binding.pry
+        return "You left the lights circuit on. ", true
+      else
+        # binding.pry
+        return "You flip the lights circuit to the off position. ", false
+      end
+    else
+      if lights == 'off'
+        # binding.pry
+        return "You left the lights circuit off. ", false
+      else
+        # binding.pry
+        return "You flipped the lights circuit into the on position. ", true
+      end
+    end
+  end
+
+  def outlets_toggle(outlets)
+    # binding.pry
+    if self.outlets_on
+      if outlets == 'on'
+        # binding.pry
+        return "You left the outlets circuit on. ", true
+      else
+        # binding.pry
+        return "You flip the outlets circuit to the off position. ", false
+      end
+    else
+      if outlets == 'off'
+        # binding.pry
+        return "You left the outlets circuit off. ", false
+      else
+        # binding.pry
+        return "You flipped the outlets circuit back into the on position. ", true
+      end
+    end
+  end
+
+  def open_circuitbox
+    if self.circuitbox_open
+      return "The circuit box door is already open."
+    else
+      return "There is a small lip on the circuit box door that's used to open it but the door is very tight and your fingers can't get enough purchase to open it. You see many scratches worn into area next to the lip. "
+    end
+  end
+
+  def inspect_circuitbox
+    description = "The circuit box is in the wall near the door. You don't have to step in the puddle to get to it. "
+    if self.circuitbox_open == false
+      description << "The door to the circuit box is closed. On the right side of the door is a small lip intended to assist in opening the box. There are a lot of scratches in the wall immediately next to the lip. "
+    else
+      description << "The door to the circuit box is open, inside you see two circuit breakers. One is marked 'Lights', the other 'Outlets'. "
+      if self.lights_on
+        description << "The breaker for the lights is in the on position. "
+      else
+        description << "The breaker for the lights is in the off position. "
+      end
+      if self.outlets_on
+        description << "The outlets breaker is #{"also " if self.lights_on == true}set to on. "
+      else
+        description << "The outlets breaker is #{"also " if self.lights_on == false}set to off. "
+      end
+    end
+    return description
+  end
+
+  def outlet_action(action)
+    case action
+    when 'get'
+      return "You can't take the outlet. "
+    when 'use'
+      return "There is nothing to plug into the outlet. And it doesn't look entirely safe. "
+    when 'open'
+      return "The outlets are already dangling, they can't get more open than that. "
+    when 'inspect'
+      self.inspect_outlet
+    else
+      return "Outlet action outside of scope. "
+    end
+  end
+
+  def inspect_outlet
+    description = "The outlet is to the right of the door you want to exit through. The outlet no longer has plugs or a faceplate. All that's left are exposed wires which reach down far enough to touch the floor. "
+    if self.floor_wet
+      description << "The ends of the wires are sitting in the pool of water on the floor. "
+    end
+    if self.outlets_on
+      description << "The wires appear to be live, which is evident because the wires spark periodically. "
+    else
+      description << "The wires are no longer sparking every few seconds, the power feeding them seems to have been successfully turned off. "
+    end
+    return description
+  end
+
+  def move_horror
+    if self.end_count == 0
+      case self.turns_remain
+      when 8
+        return "You shudder as you hear the nameless horror getting closer as it moves down the hall to the door you locked behind you. "
+      when 7
+        return "The horror has picked up speed. You hear him almost at the door."
+      when 6
+        return "The horror is just outside the door. You see the door handle turn and the door press in toward you. Thankfully the bolt holds and the horror remains outside the room. "
+      when 5
+        return "You nearly jump out of your skin as a deafening blast issues from the door. The nameless horror wants in, and it appears it will get what it wants. "
+      when 4
+        return "Again the nameless horror slams against the door. This time you see that it is getting results. The jamb is beginning to crack as the bolt also seems to be desperately trying to escape the horror. The bolt is pushing the entire lockplate and jamb out of the wall and in your direction. "
+      when 3
+        return "You don't know if it's using body or some unknown force, but the result is the same. The nameless horror has taken this door to the brink of destruction. The door jamb has splintered and the door is bowed in and riddled with cracks. One more blow and the door will no longer separate you. "
+      when 2
+        return "With a final shattering blast, the nameless horror obliterates the door. Standing just outside the room, as his gaze bores into you, you feel an emptiness as if your very soul is being pulled out of you. "
+      when 1
+        return "The nameless horror has stepped into the room. ", true
+      when 0
+        return "0", true
+      else
+        return "below 0"
+      end
+    else
+      if self.horror_stabbed && self.horror_staggered
+        case end_count
+        when 4
+          return "Reeling from your blows the horror is visibly staggered. The blood issuing from the stab wound you inflicted is a dark crimson bordering on black and has a consistency that can't quite decide if it's a sludgy liquid or a heavy gas. "
+        when 3
+          return "Beginning to recover again, the horrors gaze locks on you. The fury emanating from it is palpable, it can almost be tasted. "
+        when 2
+          return "Recovered and filled with liquid hate that is literally pouring out of him, the nameless horror prepares to obliterate you. "
+        else
+          return "move_horror end_count out of scope. (stabbed/staggered)"
+        end
+      elsif self.horror_stabbed
+        case end_count
+        when 4
+          return "Visibly shocked at what happened, the horror's attention focuses at itself as it surveys the damage you inflicted. "
+        when 3
+          return "Though the nearly black smoky sludge it uses for blood still ooses from its wound, the horror has recovered. It won't be long now. "
+        when 2
+          return "You sense the horror's hunger and satisfaction. You feel like a mouse captured by a cat, seconds before the cat stops playing games and finally ends the mouses torment. "
+        else
+          return "move_horror end_count out of scope. (stabbed)"
+        end
+      elsif self.horror_staggered
+        case end_count
+        when 4
+          return "Your blow has managed to knock the horror to the ground. It is very clearly staggered. "
+        when 3
+          return "The nameless horror wastes no time recovering. It's regained it's feet and has refocused its attention on you. "
+        when 2
+          return "Fully recovered and looming over you, the horror's revenge won't have time to get cold. It's being served now. "
+        else
+          return "move_horror end_count out of scope. (staggered)"
+        end
+      else 
+        return "Move horror end_count, horror damage out of scope. " 
+      end
+    end
+  end
+
+  def end_game
+    if self.lights_on == false
+      return "Lights out ending."
+    elsif self.door_open
+      return "Door open, escape room."
+    elsif self.turns_remain <= 0 && self.end_count <= 0
+      if self.horror_staggered && self.horror_stabbed
+        return "Horror got you ending, stabbed and staggered."
+      elsif self.horror_staggered
+        return "Horror got you ending, staggered."
+      elsif self.horror_stabbed
+        return "Horror got you ending, stabbed."
+      else
+        return "Horror got you ending, no damage."
+      end
     end
   end
 

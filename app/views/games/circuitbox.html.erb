@@ -1,13 +1,42 @@
 <h1>Circuit Box</h1>
 
 <%= form_tag('/act_on_object', method: :get) do %>
-  <table>
+  <table class="circuit_table">
     <tr>
-      <td><%= text_field :puzzlebox, :attempt %></td>
+      <td><h2>Lights</h2></td>
+      <td><h2>Outlets</h2></td>
+    </tr>
+    <tr>
+      <td><%=radio_button_tag 'lights', 'on', @game.lights_on %> On</td>
+      <td><%=radio_button_tag 'outlets', 'on', @game.outlets_on %> On</td>
+    </tr>
+    <tr>
+      <td><%=radio_button_tag 'lights', 'off', !@game.lights_on %> Off</td>
+      <td><%=radio_button_tag 'outlets', 'off', !@game.outlets_on %> Off</td>
     </tr>
     <%= hidden_field_tag :game_id, params[:id] %>
 
-    <tr><td><%= submit_tag 'Enter' %></td></tr>
+    <tr><td><%= submit_tag 'Flip Circuits' %></td></tr>
   </table>
 
 <% end %>
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <input type="checkbox" name="my-checkbox" id="outlet" checked>
+
+<script>
+  $(function(){
+    $("[name='my-checkbox']").bootstrapSwitch();
+  });
+
+</script> -->
