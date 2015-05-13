@@ -21,7 +21,7 @@ before_action :authenticate_user!
     @game.user_id = current_user.id
 
     if @game.save
-      redirect_to game_path(@game), notice: "The horror is coming. You must get out of this room, and you can't get out the way you came in."
+      redirect_to intro_path(@game), notice: "The horror is coming. You must get out of this room, and you can't get out the way you came in."
     else
       flash[:alert] = "There was an error starting new game."
       render :root
@@ -210,6 +210,10 @@ before_action :authenticate_user!
     @game.destroy
     
     redirect_to games_path, notice: 'Game save deleted.'
+  end
+
+  def intro
+    @game = Game.find(params[:id])
   end
 
   def endgame
