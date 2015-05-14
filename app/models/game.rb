@@ -24,7 +24,7 @@ class Game < ActiveRecord::Base
     self.horror_staggered = false if self.horror_staggered.nil?
     self.horror_stabbed = false if self.horror_stabbed.nil?
     self.floor_wet = true if self.floor_wet.nil?
-    self.turns_remain ||= 8
+    self.turns_remain ||= 7
     self.game_over = false if self.game_over.nil?
     self.end_count ||= 0
     # self.objects_array = ["Gloves", "Mop", "Knife", "Door", "Desk", "Pen", "Paper", "Key", "Glass Box", "Circuit Box", "Outlet", "Puzzle Box", "Nameless Horror"]
