@@ -21,7 +21,7 @@ Rails.application.routes.draw do
   # See how all your routes lay out with "rake routes".
 
   # You can have the root of your site routed with "root"
-  get '/welcome/test', to: 'welcome#test', as: 'test_welcome'
+  # get '/welcome/test', to: 'welcome#test', as: 'test_welcome'
   root 'welcome#index'
 
   # Example of regular route:
