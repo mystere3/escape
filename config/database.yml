@@ -20,6 +20,15 @@ test:
   <<: *default
   database: db/test.sqlite3
 
-production:
+# production:
+#   adapter: postgresql
+#   database: db/escape_db_production
+
+
+  production:
   adapter: postgresql
-  database: db/escape_db_production
+  encoding: unicode
+  pool: 25
+  database: school_app_production
+  username: admin
+  password: 
