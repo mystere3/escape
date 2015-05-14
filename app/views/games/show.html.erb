@@ -1,9 +1,21 @@
 <%= link_to 'Return to games list', games_path %>
 <h1>Escape! </h1>
 
-<%= flash[:notice] if flash[:notice] %><br>
+<p><%= @game.room_description %></p>
+<p><%= @game.door_description %></p>
+<p><%= @game.desk_description %></p>
+<p><%= @game.mop_description %></p>
+<p><%= @game.glassbox_description %></p>
+<p><%= @game.circuitbox_description %></p>
 
-<%= flash[:alert] if flash[:alert] %> <br>
+<% if flash[:notice] %>
+  <div class="alert alert-success"><%= flash[:notice] if flash[:notice] %></div>
+<% end %>
+
+<% if flash[:alert] %>
+  <div class="alert alert-danger"><%= flash[:alert] if flash[:alert] %></div>
+<% end %>
+
 
 <%= form_tag('/act_on_object', method: :get) do %>
   <table>

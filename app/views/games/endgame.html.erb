@@ -1,3 +1,11 @@
 <%= link_to 'Return to games list', games_path %>
 <h1>Endgame page</h1>
 <%= @closing_story %>
+
+<% if @game.door_open %>
+  <h1>You escape!</h1>
+  <h2>for now...</h2>
+<% else %>
+  <h1>You failed to escape.</h1>
+  <h2>Game Over.</h2>
+<% end %>

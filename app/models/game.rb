@@ -516,6 +516,8 @@ class Game < ActiveRecord::Base
         return "The circuit box doesn't have a lock to use a key on."
       when 'puzzlebox'
         return "The puzzle box doesn't have a keyed lock."
+      when ''
+        return "You have to use the key on something. "
       else
         return "You can't use the key with the #{use_on}"
       end
@@ -715,7 +717,7 @@ class Game < ActiveRecord::Base
         when 4
           return "Reeling from your blows the horror is visibly staggered. The blood issuing from the stab wound you inflicted is a dark crimson bordering on black and has a consistency that can't quite decide if it's a sludgy liquid or a heavy gas. "
         when 3
-          return "Beginning to recover again, the horrors gaze locks on you. The fury emanating from it is palpable, it can almost be tasted. "
+          return "Beginning to recover again, the horror's gaze locks on you. The fury emanating from it is palpable, it can almost be tasted. "
         when 2
           return "Recovered and filled with liquid hate that is literally pouring out of him, the nameless horror prepares to obliterate you. "
         else
@@ -751,20 +753,94 @@ class Game < ActiveRecord::Base
 
   def end_game
     if self.lights_on == false
-      return "Lights out ending."
+      return "You trip the breaker for the lights. At the same instant that the lights go out, a blinding blast of electricity blasts from the circuit box. The electricity that courses violently through you is nowhere near enough to kill you, but that doesn’t matter. The jolt has thrown you back and you find yourself on the floor. You are completely disoriented and this windowless room is utterly devoid of light. You fact that you don’t even see light from below the doors hints that the extent of the circuit boxes influence may be long indeed. The banging on the door has ceased. Instead, you hear the deadbolt retract, and the door open. The nameless horror approaches and the dry clicks of its breath almost sound like cackling. This is the end. "
     elsif self.door_open
-      return "Door open, escape room."
+      return "You open the door to a hallway identical to the one that led you in to the room. You hear the horror finally getting past its obstacle as well, as the door keeping him from the room blasts into splinters. You don’t hesitate, you flee again. You don’t try the doors you pass, you assume they are locked, just like the ones before. Ahead, the hallway turns to the left. You hope that turning that corner will reveal some way out, or some way to fight. This has to end one way or another. The horror pursues, you feel it in your bones. This can’t be hopeless, this can’t be futile…can it?"
     elsif self.turns_remain <= 0 && self.end_count <= 0
       if self.horror_staggered && self.horror_stabbed
-        return "Horror got you ending, stabbed and staggered."
+        return "You feel like you’ve been here before. You have no idea how many times. Face to face with this nameless horror. Endlessly pursued. Sometimes you manage to flee for longer, sometimes you manage to fight back for a while. But it always ends this way. Face to face with the nameless horror. Terror sweats pour from your pores. Not because of whats about to happen when the horror finally acquires you again, but because of what you’re sure is going to happen after. Is this hell? Is it purgatory? A dream? Or some kind of madness? Or are you wrong about all this happening before? You shouldn’t trust your fear addled brain about anything. But you feel certain, as the horror envelopes you, that the sweat on your body will still be there when you ‘wake up’ in the bed, face to face with the horror again. As if it never left."
       elsif self.horror_staggered
-        return "Horror got you ending, staggered."
+        return "As the horror comes to take you, you can’t help but wonder. What else could you have done to get out of this room? Was there any way to stop or kill the horror? It’s clearly not entirely invulnerable, blunt force knocked it down. Alas, you’ll never know what could have been. The horror is here now and theres no way to win. All will is leached from you, taken into its heart. That is it’s first course, as it consumes all you are or were."
       elsif self.horror_stabbed
-        return "Horror got you ending, stabbed."
+        return "You put up a valiant fight in the face of futility. As the horror approaches you feel a searing cold rip through you and you collapse to the ground. Standing above you now you imagine you see a grin, as the nameless horror plunges its fingers into the wound you created, tearing a huge hole in its body practically the length of its torso. It’s black mud vapor blood rains down on you. Where it touches you feel that terrible cold burn you in a way fire doesn’t come close to replicating. Where it touches you, you melt away. You watch as entire sections of your body vanish into black steam and then vanish entirely. Leaving behind nothing except the searing pain. Until finally the horror ushers its blood onto your face and it all goes black. You feel yourself screaming in the middle of this nothingness. You scream because your whole body is still burning. You scream but you can’t hear a sound. You don’t see a thing except blackness. You are entirely impotent. You can do nothing. Through the pain you have just enough of your wits left to wonder why you’re still here, and when this will end."
       else
-        return "Horror got you ending, no damage."
+        return "As the horror approaches you can feel its contempt. As if it is disappointed, it expects more from its prey. It almost casually engulfs you, as if it wants to get this unpleasant business over as soon as it can, not willing to give your death any ceremony that it doesn’t deserve. Before all your life and awareness is extinguished you are filled with an overwhelming sense of failure and inadequacy. You feel the waves of pricks and tingles over your skin as you feel embarrassed to your core by the inadequacy of your very being. The last thing you feel is a freefalling depression, knowing your death will be so disappointing and unmemorable even to your own murderer."
       end
     end
+  end
+
+  # METHODS FOR BUILDING ROOM DESCRIPTION
+
+  def room_description
+    return "There are no windows in this room. You are in an office dressed in dark colors and complicated patterns reminiscent of the early 20th century. There is an elaborately illuminated electric chandelier hanging from the ceiling made of a dark metal and what appears to be crystal. The walls are covered in dirty wallpaper with the same garish pattern you recognize from the hallway. On the wall across from the desk is the only picture in the room. The picture’s frame is thick and rife with extravagant sculpting and slathered in gold paint. According to the label in the bottom of the frame, this is a portrait of ‘Queen Victoria, oil on canvas’. The floor is hardwood made up of wide dark planks. "
+  end
+
+  def door_description
+    description = "Perhaps most importantly there is a second door. The door is closed and above the handle you see a keyed deadbolt lock. "
+    if self.floor_wet
+      description << "There is a puddle covering the floor in front of the door. An electrical outlet next to the door is hanging open and loose wires are dangling into the puddle. "
+      if self.outlets_on
+        description << "You can see occasional sparks where the wires touch the water. "
+      end
+    else
+      description << "The open outlet and its dangling wires now hang down onto an expertly dried floor. "
+    end
+    return description
+  end
+
+  def desk_description
+    description = "The only furniture in the room is a well worn but quite handsome mahogany desk. "
+    if self.paper_has == false
+      description << "There is a sheet of paper on the desk "
+      if self.paper_content.length == 0
+        description << "that is blank. "
+      else
+        description << "on which you have written, '" << self.paper_content << "'. "
+      end
+    end
+    if self.desk_open
+      description << "The desk's single drawer is open. "
+      if self.pen_has == false && self.knife_has == false
+        description << "Inside there is a pen and a knife. "
+      elsif self.pen_has == false
+        description << "Inside the drawer is a pen. "
+      elsif self.knife_has == false
+        description << "There is a knife in the drawer. "
+      else
+        description << "The drawer is empty. "  
+      end
+    else
+      description << "There is a single closed drawer on the front of the desk. "
+    end
+  end
+
+  def mop_description
+    if self.mop_has == false
+      return "There is a mop leaning against one wall. "
+    else
+      return ""
+    end
+  end
+
+  def glassbox_description
+    description = "There is a glass faced box in one wall. This box is reminiscent of those found in public buildings containing fire hoses or extinguishers. "
+    if self.glassbox_open
+      description << "The glass in the door has been shattered allowing access to the box. "
+    end
+    if self.gloves_has == false
+      description << "Inside the glass box is a yellow pair of rubber gloves. "
+    else
+      description << "The glass box is empty. "
+    end
+    return description
+  end
+
+  def circuitbox_description
+    description = "There is a circuit box on the wall. "
+    if self.circuitbox_open
+      description << "The door to the circuit box is open. There are two circuit breakers inside, one is labelled 'Lights', the other 'Outlets'. "
+    end
+    return description
   end
 
 end
