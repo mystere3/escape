@@ -10,7 +10,7 @@ Type the letters in the order you press them:<br>
 <%= form_tag('/act_on_object', method: :get) do %>
   <table>
     <tr>
-      <td><%= text_field :puzzlebox, :attempt %></td>
+      <td><%= text_field :puzzlebox, :attempt, autocomplete: "off" %></td>
     </tr>
     <%= hidden_field_tag :game_id, params[:id] %>
 

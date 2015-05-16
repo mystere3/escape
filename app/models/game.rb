@@ -62,6 +62,8 @@ class Game < ActiveRecord::Base
       self.circuitbox_action(action)
     when 'outlet'
       self.outlet_action(action)
+    when 'horror'
+      self.horror_action(action, use_on)
     else
 
     end
@@ -129,7 +131,7 @@ class Game < ActiveRecord::Base
             # still have mop, floor_wet = false
             return "Although the metal handled mop recieves an electric charge when it sops up the electrified water, the rubber gloves have insulated you and you are unaffected. This miraculous mop has left the floor perfectly dry.", true, 'floor_dry'
           else
-            return "When you touch the mop to the puddle you feel a considerable electic shock that blows you back away from the puddle and the door."
+            return "When you touch the mop to the puddle you feel a considerable electic shock that blows you back away from the puddle and the door.", true
           end
         else
           return "This fantastic state-of-the-art mop has left the floor completely dry.", true, 'floor_dry'
@@ -687,6 +689,51 @@ class Game < ActiveRecord::Base
     return description
   end
 
+  def horror_action(action, use_on)
+    case action
+    when 'get'
+      return "You can't 'get' the nameless horror. Nor, I imagine, would one want to. "
+    when 'use'
+      return "You have no power over the horror and therefore can't use it for anything. "
+    when 'open'
+      self.horror_open(use_on)
+    when 'inspect'
+      self.horror_inspect
+    else
+    end
+  end
+
+  def horror_open(use_on)
+    if self.horror_in_room
+      case use_on
+      when 'knife'
+        if self.horror_stabbed
+          return "The horror is ready for additional next knife attacks and parries your attempt with ease."
+        else
+          return "You swing the knife at the horror's midsection in an attempt to slice him open. The creature bellows as you successfully pierce what you assume is its abdomen. ", false, "horror_stabbed"
+        end
+      else
+      end
+    else
+      return "No actions can be performed on the horror because he's on the other side of the door you locked on your way in. And opening the door would be inadvisable at this time. "
+    end
+  end
+
+  def horror_inspect
+    if horror_in_room
+      message = "A cohesive concept of the horror is hard for your mind to hold onto. At times its hands and feet seem like black taloned demonic appendages, at others they fade into an amorphous black mist. It's head has a solidity you never see as it is constantly surrounded by the impenatrable black vapor that spins at an impossible speed around its head. Despite this you imagine you can see hateful features making up its face. Its body is clad in something resembling a dustcloak made up of a very haphazard patchwork of leather. You don't want to acknowledge the type of leather those patches may be, or the shapes those pieces of leather used to hold. "
+      if self.horror_staggered
+        message << "Although your blow with the broom clearly had an effect, there is no discernable mark left on the creatures body that can be seen through the roiling black smoke. "
+      end
+      if self.horror_stabbed
+        message << "The wound you inflicted with your blade oozes with its dark crimson blood, which has a consistency that seems to vary between thick sludge and vapor. When the blood touches the floor, it shortly boils away entirely into the black mist and then dissipates. "
+      end
+    else
+      message = "The horror is not in the room with you. You saw it earlier but your horrified brain seems to have had a very hard time retaining much about the horror's appearance. You remember blackness and a lot of confusing motion. And you remember feeling pure hate turned to madness entirely focused on you. "
+    end
+    return message
+  end
+
   def move_horror
     if self.end_count == 0
       case self.turns_remain
@@ -703,7 +750,7 @@ class Game < ActiveRecord::Base
       when 3
         return "You don't know if it's using body or some unknown force, but the result is the same. The nameless horror has taken this door to the brink of destruction. The door jamb has splintered and the door is bowed in and riddled with cracks. One more blow and the door will no longer separate you. "
       when 2
-        return "With a final shattering blast, the nameless horror obliterates the door. Standing just outside the room, as his gaze bores into you, you feel an emptiness as if your very soul is being pulled out of you. "
+        return "With a final shattering blast, the nameless horror obliterates the door. Standing just outside the room, as his gaze bores into you, you feel an emptiness as if your very soul is being pulled out of you. ", true
       when 1
         return "The nameless horror has stepped into the room. ", true
       when 0
@@ -762,7 +809,7 @@ class Game < ActiveRecord::Base
       elsif self.horror_staggered
         return "As the horror comes to take you, you can’t help but wonder. What else could you have done to get out of this room? Was there any way to stop or kill the horror? It’s clearly not entirely invulnerable, blunt force knocked it down. Alas, you’ll never know what could have been. The horror is here now and theres no way to win. All will is leached from you, taken into its heart. That is it’s first course, as it consumes all you are or were."
       elsif self.horror_stabbed
-        return "You put up a valiant fight in the face of futility. As the horror approaches you feel a searing cold rip through you and you collapse to the ground. Standing above you now you imagine you see a grin, as the nameless horror plunges its fingers into the wound you created, tearing a huge hole in its body practically the length of its torso. It’s black mud vapor blood rains down on you. Where it touches you feel that terrible cold burn you in a way fire doesn’t come close to replicating. Where it touches you, you melt away. You watch as entire sections of your body vanish into black steam and then vanish entirely. Leaving behind nothing except the searing pain. Until finally the horror ushers its blood onto your face and it all goes black. You feel yourself screaming in the middle of this nothingness. You scream because your whole body is still burning. You scream but you can’t hear a sound. You don’t see a thing except blackness. You are entirely impotent. You can do nothing. Through the pain you have just enough of your wits left to wonder why you’re still here, and when this will end."
+        return "You put up a valiant fight in the face of futility. As the horror approaches you feel a searing cold rip through you and you collapse to the ground. Standing above you now you imagine you see a grin, as the nameless horror plunges its fingers into the wound you created, tearing a huge hole in its body practically the length of its torso. It’s black mud vapor blood rains down on you. Where it touches you feel that terrible cold burn you in a way fire doesn’t come close to replicating. Where it touches you, you melt away. You watch as entire sections of your body drift away into black steam and then vanish entirely. Leaving behind nothing but the searing pain. Until finally the horror ushers its blood onto your face and it all goes black. You feel yourself screaming in the middle of this nothingness. You scream because your whole body is still burning. You scream but you can’t hear a sound. You don’t see a thing except blackness. You are entirely impotent. You can do nothing. Through the pain you have just enough of your wits left to wonder why you’re still here, and when this will end."
       else
         return "As the horror approaches you can feel its contempt. As if it is disappointed, it expects more from its prey. It almost casually engulfs you, as if it wants to get this unpleasant business over as soon as it can, not willing to give your death any ceremony that it doesn’t deserve. Before all your life and awareness is extinguished you are filled with an overwhelming sense of failure and inadequacy. You feel the waves of pricks and tingles over your skin as you feel embarrassed to your core by the inadequacy of your very being. The last thing you feel is a freefalling depression, knowing your death will be so disappointing and unmemorable even to your own murderer."
       end
@@ -772,7 +819,7 @@ class Game < ActiveRecord::Base
   # METHODS FOR BUILDING ROOM DESCRIPTION
 
   def room_description
-    return "There are no windows in this room. You are in an office dressed in dark colors and complicated patterns reminiscent of the early 20th century. There is an elaborately illuminated electric chandelier hanging from the ceiling made of a dark metal and what appears to be crystal. The walls are covered in dirty wallpaper with the same garish pattern you recognize from the hallway. On the wall across from the desk is the only picture in the room. The picture’s frame is thick and rife with extravagant sculpting and slathered in gold paint. According to the label in the bottom of the frame, this is a portrait of ‘Queen Victoria, oil on canvas’. The floor is hardwood made up of wide dark planks. "
+    return "There are no windows in this room. You are in an office that is dressed in the dark colors and complicated patterns reminiscent of the early 20th century. There is an elaborately illuminated electric chandelier hanging from the ceiling made of a dark metal and what appears to be crystal. The walls are covered in dirty wallpaper with the same garish pattern you recognize from the hallway. On the wall across from the desk is the only picture in the room. The picture’s frame is thick and rife with extravagant sculpting and slathered in gold paint. According to the label in the bottom of the frame, this is a portrait of ‘Queen Victoria, oil on canvas’. The floor is hardwood made up of wide dark planks. "
   end
 
   def door_description

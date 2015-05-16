@@ -3,10 +3,13 @@
 <head>
   <title>Escape</title>
   <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Cedarville+Cursive" />
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
   <%= csrf_meta_tags %>
 </head>
 <body>
+
+  <%= render 'layouts/navigation' %>
 
   <% if current_user %>
     <span class="user-email"><%= current_user.email %></span>

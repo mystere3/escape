@@ -38,7 +38,7 @@ before_action :authenticate_user!
     if params[:paper].present?
       all_writing = @game.paper_content
       content_hash = params[:paper]
-      all_writing << content_hash[:content] << " "
+      all_writing << content_hash[:content] << "\n"
       @game.assign_attributes(:paper_content => all_writing)
       @game.save
       @game_message = "You wrote on the paper."
@@ -154,7 +154,8 @@ before_action :authenticate_user!
           elsif @action_result == 'circuits'
             return redirect_to circuitbox_path(@game)
           end
-          
+        when 'horror'
+          #  do nothing, action dealt with in secondary_result
         else
           @game_message = "Object outside of scope."
         end
@@ -196,7 +197,7 @@ before_action :authenticate_user!
         @game.save
 
         if @game.game_over
-          return redirect_to endgame_path(@game)
+          return redirect_to endgame_path(@game), notice: @game_message
         end
       end
 

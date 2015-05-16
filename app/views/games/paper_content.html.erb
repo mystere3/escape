@@ -1,6 +1,6 @@
 <h1>Paper Content</h1>
 <br>
-<%= @game.paper_content %>
+<p class="written_paper"><%= @game.paper_content %>
 <br>
 <%= form_tag('/act_on_object', method: :get) do %>
   <table>
@@ -11,6 +11,7 @@
     <tr>
       <td><%= text_area :paper, :content, :cols => "60", :rows => "10" %></td>
     </tr>
+
 
 
     <%= hidden_field_tag :game_id, params[:id] %>
