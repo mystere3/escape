@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150512041414) do
+ActiveRecord::Schema.define(version: 20150516144328) do
 
   create_table "games", force: :cascade do |t|
     t.boolean  "gloves_has"
@@ -57,6 +57,7 @@ ActiveRecord::Schema.define(version: 20150512041414) do
     t.datetime "updated_at"
     t.integer  "game_id"
     t.string   "name"
+    t.integer  "last_game_played"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true

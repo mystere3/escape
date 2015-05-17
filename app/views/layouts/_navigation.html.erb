@@ -1,0 +1,35 @@
+<nav class="navbar navbar-default navbar-fixed-top navbar-inverse">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#">Escape!</a>
+    </div>
+    <div class="collapse navbar-collapse">
+      <ul class="nav navbar-nav">
+      <% # binding.pry %>
+      <% if current_user %>
+        <% if current_user.last_game_played && !Game.find_by_id(current_user.last_game_played).game_over %>
+          <li><%= link_to "Continue", game_path(current_user.last_game_played) %></li>
+        <% end %>
+          <li><%= link_to "Saved Games", games_path %></li>
+      <% end %>
+        
+      </ul>
+
+      <ul class="nav navbar-nav navbar-right">
+        <% if current_user %>
+          <span class="user-email"><%= current_user.email %></span>
+          <%= link_to "Logout", destroy_user_session_path, method: :delete %>
+        <% else %>
+          <%= link_to "Login", new_user_session_path %>
+        <% end %>
+      </ul>
+    </div>
+
+  </div>
+</nav>

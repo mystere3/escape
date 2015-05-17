@@ -1,17 +1,23 @@
-<h1>Welcome#index</h1>
-<p>Find me in app/views/welcome/index.html.erb</p>
+<h1>Welcome to Escape!</h1>
 
- <p class="alert"><%= alert %></p>
+<% flash.each do |name, msg| %>
+  <div class="alert alert-<%= name.to_s == 'notice' ? 'success' : 'danger' %>">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+    <%= content_tag :div, msg, :id => "flash_#{name}" %>
+  </div>
 
-<% if current_user %>
-  <%= form_for(current_user.game) do |f| %>
-    <%= f.submit "Create new game" %>
-  <% end %>
-  <% if !current_user.game_id.nil? %>
-    <%= link_to( 'New Game', new_game_path, data: { confirm: "This will delete your current save, continue?"}) %>
-    <%= link_to( 'Continue Game', show_game_path(current_user.game_id)) %>
-  <% else %>
-    <%=link_to( 'New Game', new_game_path, class: "my-button hvr-pulse-shrink") %>
-  <% end %>
+
 <% end %>
 
+<% if current_user %>
+  <h3>Welcome <%= current_user.name %>, the nameless horror has you.</h3>
+  <%= form_for(@game) do |f| %>
+    <%= f.submit "Start new game" %>
+  <% end %>
+<% else %>
+  <h3>Login to play</h3>
+<% end %>
+
+<% # binding.pry %>
+
+ <p class="alert"><%= alert %></p>

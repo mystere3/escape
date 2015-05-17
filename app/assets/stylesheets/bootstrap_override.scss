@@ -2,6 +2,27 @@
 @import "bootstrap-sprockets";
 @import "bootstrap";
 
+body { padding-top: 70px; }
+
+nav {
+  ul.nav {
+    
+
+    .user-email {
+      color: #fff;
+      margin-right: 7px;
+    }
+  }
+}
+
+.navbar-right {
+  padding-top: 16px;
+}
+
+.navbar-form {
+  padding: 0px;
+}
+
 .circuit_table{
   td{
     padding-right: 20px

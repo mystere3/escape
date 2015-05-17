@@ -1,5 +1,14 @@
 <h2>Log in</h2>
 
+<% flash.each do |name, msg| %>
+  <div class="alert alert-<%= name.to_s == 'notice' ? 'success' : 'danger' %>">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+    <%= content_tag :div, msg, :id => "flash_#{name}" %>
+  </div>
+
+
+<% end %>
+
 <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
   <div class="field">
     <%= f.label :email %><br />
@@ -24,3 +33,9 @@
 <% end %>
 
 <%= render "devise/shared/links" %>
+
+<h2>Heads up!</h2>
+<p>'Forgot your password?' isn't hooked up. But don't worry, if you forget just set up a new account with a nonsense email address. It doesn't have to be real, but it has to be in the format of an email address. Check 'Remember me' and you'll never have to use your brain again!</p>
+
+
+

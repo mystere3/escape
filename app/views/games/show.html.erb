@@ -8,12 +8,14 @@
 <p><%= @game.glassbox_description %></p>
 <p><%= @game.circuitbox_description %></p>
 
-<% if flash[:notice] %>
+<% if flash[:alert] %>
   <div class="alert alert-success"><%= flash[:notice] %></div>
+<% elsif flash[:notice] %>
+  <div class="alert alert-info"><%= flash[:notice] %></div>
 <% end %>
 
 <% if flash[:alert] %>
-  <div class="alert alert-danger"><%= flash[:alert] if flash[:alert] %></div>
+  <div class="alert alert-danger"><%= flash[:alert] %></div>
 <% end %>
 
 

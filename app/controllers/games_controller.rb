@@ -9,6 +9,11 @@ before_action :authenticate_user!
 
   def show
     @game = Game.find(params[:id])
+    if current_user.last_game_played != @game.id 
+      current_user.assign_attributes(:last_game_played => @game.id)
+      current_user.save
+    end
+    
     # binding.pry
   end
 
