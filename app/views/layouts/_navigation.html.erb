@@ -1,3 +1,4 @@
+
 <nav class="navbar navbar-default navbar-fixed-top navbar-inverse">
   <div class="container">
     <div class="navbar-header">
@@ -7,9 +8,10 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="#">Escape!</a>
+        <a class="navbar-brand" href="/">Escape!</a>
     </div>
-    <div class="collapse navbar-collapse">
+    
+    <div class="collapse navbar-collapse" id="toCollapse">
       <ul class="nav navbar-nav">
       <% # binding.pry %>
       <% if current_user %>
@@ -18,6 +20,10 @@
         <% end %>
           <li><%= link_to "Saved Games", games_path %></li>
       <% end %>
+      <% if !@game.nil? && !@game.id.nil? %>
+        <li><%= link_to "Intro", intro_path %></li>
+      <% end %>
+      <li><%= link_to "How to Play", tutorial_path %></li>
         
       </ul>
 

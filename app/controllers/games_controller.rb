@@ -235,4 +235,8 @@ before_action :authenticate_user!
     @game = Game.find(params[:id])
   end
 
+  def tutorial
+    
+  end
+
 end

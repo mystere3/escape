@@ -16,6 +16,7 @@ Rails.application.routes.draw do
   get '/puzzlebox/:id', to: 'games#puzzlebox', as: 'puzzlebox'
   get '/circuitbox/:id', to: 'games#circuitbox', as: 'circuitbox'
   get '/intro/:id', to: 'games#intro', as: 'intro'
+  get '/tutorial', to: 'games#tutorial', as: 'tutorial'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

@@ -823,22 +823,22 @@ class Game < ActiveRecord::Base
   end
 
   def door_description
-    description = "Perhaps most importantly there is a second door. The door is closed and above the handle you see a keyed deadbolt lock. "
+    description = "Perhaps most importantly there is a second DOOR. The DOOR is closed and above the handle you see a keyed deadbolt lock. "
     if self.floor_wet
-      description << "There is a puddle covering the floor in front of the door. An electrical outlet next to the door is hanging open and loose wires are dangling into the puddle. "
+      description << "There is a PUDDLE covering the floor in front of the DOOR. An electrical OUTLET next to the DOOR is hanging open and loose wires are dangling into the puddle. "
       if self.outlets_on
         description << "You can see occasional sparks where the wires touch the water. "
       end
     else
-      description << "The open outlet and its dangling wires now hang down onto an expertly dried floor. "
+      description << "The open OUTLET and its dangling wires now hang down onto an expertly dried floor. "
     end
     return description
   end
 
   def desk_description
-    description = "The only furniture in the room is a well worn but quite handsome mahogany desk. "
+    description = "The only furniture in the room is a well worn but quite handsome mahogany DESK. "
     if self.paper_has == false
-      description << "There is a sheet of paper on the desk "
+      description << "There is a sheet of PAPER on the DESK "
       if self.paper_content.length == 0
         description << "that is blank. "
       else
@@ -846,46 +846,46 @@ class Game < ActiveRecord::Base
       end
     end
     if self.desk_open
-      description << "The desk's single drawer is open. "
+      description << "The DESK's single drawer is open. "
       if self.pen_has == false && self.knife_has == false
-        description << "Inside there is a pen and a knife. "
+        description << "Inside there is a PEN and a KNIFE. "
       elsif self.pen_has == false
-        description << "Inside the drawer is a pen. "
+        description << "Inside the drawer is a PEN. "
       elsif self.knife_has == false
-        description << "There is a knife in the drawer. "
+        description << "There is a KNIFE in the drawer. "
       else
         description << "The drawer is empty. "  
       end
     else
-      description << "There is a single closed drawer on the front of the desk. "
+      description << "There is a single closed drawer on the front of the DESK. "
     end
   end
 
   def mop_description
     if self.mop_has == false
-      return "There is a mop leaning against one wall. "
+      return "There is a MOP leaning against one wall. "
     else
       return ""
     end
   end
 
   def glassbox_description
-    description = "There is a glass faced box in one wall. This box is reminiscent of those found in public buildings containing fire hoses or extinguishers. "
+    description = "There is a GLASS BOX in one wall. This box is reminiscent of those found in public buildings containing fire hoses or extinguishers. "
     if self.glassbox_open
       description << "The glass in the door has been shattered allowing access to the box. "
     end
     if self.gloves_has == false
-      description << "Inside the glass box is a yellow pair of rubber gloves. "
+      description << "Inside the GLASS BOX is a yellow pair of rubber GLOVES. "
     else
-      description << "The glass box is empty. "
+      description << "The GLASS BOX is empty. "
     end
     return description
   end
 
   def circuitbox_description
-    description = "There is a circuit box on the wall. "
+    description = "There is a CIRCUIT BOX on the wall. "
     if self.circuitbox_open
-      description << "The door to the circuit box is open. There are two circuit breakers inside, one is labelled 'Lights', the other 'Outlets'. "
+      description << "The door to the CIRCUIT BOX is open. There are two circuit breakers inside, one is labelled 'Lights,' the other 'Outlets.' "
     end
     return description
   end
