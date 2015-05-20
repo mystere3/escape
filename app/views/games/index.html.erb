@@ -4,6 +4,43 @@
   <%= form_for(@game) do |f| %>
     <%= f.submit "Create new game" %>
   <% end %>
+
+<table class="table table-condensed table hover">
+  <thead>
+    <tr>
+      <th>Created</th>
+      <th>Status</th>
+      <th>Options</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% current_user.games.each do |game| %>
+      <tr>
+        <td><%= time_ago_in_words(game.created_at) %> ago</td>
+
+        <% if game.game_over %>
+          <% if game.door_open %>
+            <td class="success">You escaped!</td>
+          <% else %>
+            <td class="danger">Horrifying Death.</td>
+          <% end %>
+        <% else %>
+          <td>In Progress.</td>
+        <% end %>
+        <td>
+          <% if !game.game_over %>
+            <%= link_to 'Play', game_path(game) %>
+          <% end %>
+          <%= link_to 'Delete Game', game_path(game),
+              method: :delete, 
+              data: { confirm: 'Are you sure?' } %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+  
+
 <ul>
   <% current_user.games.each do |game| %>
 
