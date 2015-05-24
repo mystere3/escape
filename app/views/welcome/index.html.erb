@@ -1,3 +1,4 @@
+<div class="container">
 <h1>Welcome to Escape!</h1>
 
 <% flash.each do |name, msg| %>
@@ -5,14 +6,12 @@
     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
     <%= content_tag :div, msg, :id => "flash_#{name}" %>
   </div>
-
-
 <% end %>
 
 <% if current_user %>
   <h3>Welcome <%= current_user.name %>, the nameless horror has you.</h3>
   <%= form_for(@game) do |f| %>
-    <%= f.submit "Start new game" %>
+    <%= f.submit "Start new game", class: "btn btn-primary" %>
   <% end %>
 <% else %>
   <h3>Login to play</h3>
@@ -21,3 +20,4 @@
 <% # binding.pry %>
 
  <p class="alert"><%= alert %></p>
+</div>

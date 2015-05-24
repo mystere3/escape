@@ -1,11 +1,18 @@
+<div class="container">
 <h1><%= current_user.name %>'s Games</h1>
 
-
-  <%= form_for(@game) do |f| %>
-    <%= f.submit "Create new game" %>
+  <% flash.each do |name, msg| %>
+    <div class="alert alert-<%= name.to_s == 'notice' ? 'success' : 'danger' %>">
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+      <%= content_tag :div, msg, :id => "flash_#{name}" %>
+    </div>
   <% end %>
 
-<table class="table table-condensed table hover">
+  <%= form_for(@game) do |f| %>
+    <%= f.submit "Create new game", class: "btn btn-primary" %>
+  <% end %>
+
+<table class="table table-condensed table-hover">
   <thead>
     <tr>
       <th>Created</th>
@@ -28,40 +35,17 @@
           <td>In Progress.</td>
         <% end %>
         <td>
-          <% if !game.game_over %>
-            <%= link_to 'Play', game_path(game) %>
-          <% end %>
-          <%= link_to 'Delete Game', game_path(game),
+          <%= link_to 'Delete', game_path(game),
               method: :delete, 
-              data: { confirm: 'Are you sure?' } %>
+              data: { confirm: 'Are you sure?' }, class: "btn btn-danger" %>
+          <% if !game.game_over %>
+            <%= link_to 'Play', game_path(game), class: "btn btn-primary" %>
+          <% end %> 
         </td>
       </tr>
     <% end %>
   </tbody>
 </table>
+</div>
   
 
-<ul>
-  <% current_user.games.each do |game| %>
-
-    <li>
-      Game created <%= time_ago_in_words(game.created_at) %> ago
-      <% if game.game_over %>
-        <% if game.door_open %>
-          You escaped!
-        <% else %>
-          Horrifying Death.
-        <% end %>
-      <% else %>
-        Undetermined.
-        <%= link_to 'Play', game_path(game) %>
-      <% end %>
-      
-      <%= link_to 'Delete Game', game_path(game),
-            method: :delete, 
-            data: { confirm: 'Are you sure?' } %>
-    </li>
-
-    
-  <% end %>
-</ul>

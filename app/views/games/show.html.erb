@@ -1,73 +1,101 @@
-<%= link_to 'Return to games list', games_path %>
-<h1>Escape! </h1>
-
-<p><%= @game.room_description %></p>
-<p><%= @game.door_description %></p>
-<p><%= @game.desk_description %></p>
-<p><%= @game.mop_description %></p>
-<p><%= @game.glassbox_description %></p>
-<p><%= @game.circuitbox_description %></p>
-
-<% if flash[:alert] %>
-  <div class="alert alert-success"><%= flash[:notice] %></div>
-<% elsif flash[:notice] %>
-  <div class="alert alert-info"><%= flash[:notice] %></div>
-<% end %>
-
-<% if flash[:alert] %>
-  <div class="alert alert-danger"><%= flash[:alert] %></div>
-<% end %>
+<div class="container">
 
 
-<%= form_tag('/act_on_object', method: :get) do %>
-  <table>
-    <tr>
-      <td><%= label_tag 'Select Action' %></td>
-      <td><%= label_tag 'Select Object' %></td>
-      <td><%= label_tag 'Optionally, select what to use object on' %></td>
-    </tr>
-    <tr>
-      <td><%= select_tag(:action_select, options_for_select([["Get", :get], ["Use", :use], ["Open", :open], ["Inspect", :inspect]])) %></td>
-      <td><%= select_tag(:object_select, options_for_select([["Gloves", :gloves], ['Mop', :mop], ['Knife', :knife], ["Door", :door], ["Desk", :desk], ["Pen", :pen], ["Paper", :paper], ["Key", :key], ["Glass Box", :glassbox], ["Circuit Box", :circuitbox], ["Outlet", :outlet], ["Puzzle Box", :puzzlebox], ["Nameless Horror", :horror]])) %></td>
-      <td><%= select_tag(:use_on, options_for_select([['', nil], ["Gloves", :gloves], ['Mop', :mop], ['Knife', :knife], ["Door", :door], ["Desk", :desk], ["Pen", :pen], ["Paper", :paper], ["Key", :key], ["Glass Box", :glassbox], ["Circuit Box", :circuitbox], ["Outlet", :outlet], ["Puzzle Box", :puzzlebox], ["Nameless Horror", :horror], ["Puddle", :puddle]])) %></td>
-    </tr>
-
-
-    <%= hidden_field_tag :game_id, params[:id] %>
-
-    <tr><td><%= submit_tag 'Commit Action' %></td></tr>
-  </table>
-<% end %>
-
-
-<!-- <br>
-Turns remain: <%= @game.turns_remain %><br>
-End count: <%= @game.end_count %><br>
-<br> -->
-Your inventory:
-<ul>
-  <% if @game.gloves_has %>
-    <li>Gloves</li>
-  <% end %>
-  <% if @game.mop_has %>
-    <li>Mop</li>
-  <% end %>
-  <% if @game.knife_has %>
-    <li>Knife</li>
-  <% end %>
-  <% if @game.pen_has %>
-    <li>Pen</li>
+<div class="room_image_box">
+  <%= image_tag("Room.png", class: "room_images") %>
+  <% if @game.paper_content.length > 0 %>
+    <%= image_tag("paper_content.png", class: "room_images") %>
   <% end %>
   <% if @game.paper_has %>
-    <li>Paper</li>
+    <%= image_tag("paper_has.png", class: "room_images") %>
   <% end %>
   <% if @game.puzzlebox_has %>
-    <li>Puzzle Box</li>
+    <%= image_tag("puzzlebox_has.png", class: "room_images") %>
   <% end %>
-  <% if @game.key_has %>
-    <li>Key</li>
-  <% end %>
-</ul>
+</div>
 
+
+
+
+  <div>
+    <div class="span4 collapse-group">
+      <div class="collapse" id="viewdetails">
+        <p><%= @game.room_description %></p>
+        <p><%= @game.door_description %></p>
+        <p><%= @game.desk_description %></p>
+        <p><%= @game.mop_description %></p>
+        <p><%= @game.glassbox_description %></p>
+        <p><%= @game.circuitbox_description %></p>
+      </div>
+      <a class="btn btn-info showdetails" data-toggle="collapse" data-target="#viewdetails"></a>
+
+    </div>
+  </div>
+
+
+
+
+
+  <% if flash[:alert] %>
+    <div class="alert alert-success"><%= flash[:notice] %></div>
+  <% elsif flash[:notice] %>
+    <div class="alert alert-info"><%= flash[:notice] %></div>
+  <% end %>
+
+  <% if flash[:alert] %>
+    <div class="alert alert-danger"><%= flash[:alert] %></div>
+  <% end %>
+
+
+  <%= form_tag('/act_on_object', method: :get) do %>
+    <table>
+      <tr>
+        <td><%= label_tag 'Select Action' %></td>
+        <td><%= label_tag 'Select Object' %></td>
+        <td><%= label_tag 'Optionally, select what to use object on' %></td>
+      </tr>
+      <tr>
+        <td><%= select_tag(:action_select, options_for_select([["Get", :get], ["Use", :use], ["Open", :open], ["Inspect", :inspect]])) %></td>
+        <td><%= select_tag(:object_select, options_for_select([["Gloves", :gloves], ['Mop', :mop], ['Knife', :knife], ["Door", :door], ["Desk", :desk], ["Pen", :pen], ["Paper", :paper], ["Key", :key], ["Glass Box", :glassbox], ["Circuit Box", :circuitbox], ["Outlet", :outlet], ["Puzzle Box", :puzzlebox], ["Nameless Horror", :horror]])) %></td>
+        <td><%= select_tag(:use_on, options_for_select([['', nil], ["Gloves", :gloves], ['Mop', :mop], ['Knife', :knife], ["Door", :door], ["Desk", :desk], ["Pen", :pen], ["Paper", :paper], ["Key", :key], ["Glass Box", :glassbox], ["Circuit Box", :circuitbox], ["Outlet", :outlet], ["Puzzle Box", :puzzlebox], ["Nameless Horror", :horror], ["Puddle", :puddle]])) %></td>
+      </tr>
+
+
+      <%= hidden_field_tag :game_id, params[:id] %>
+
+      <tr><td><%= submit_tag 'Commit Action' %></td></tr>
+    </table>
+  <% end %>
+
+
+  <!-- <br>
+  Turns remain: <%= @game.turns_remain %><br>
+  End count: <%= @game.end_count %><br>
+  <br> -->
+  Your inventory:
+  <ul>
+    <% if @game.gloves_has %>
+      <li>Gloves</li>
+    <% end %>
+    <% if @game.mop_has %>
+      <li>Mop</li>
+    <% end %>
+    <% if @game.knife_has %>
+      <li>Knife</li>
+    <% end %>
+    <% if @game.pen_has %>
+      <li>Pen</li>
+    <% end %>
+    <% if @game.paper_has %>
+      <li>Paper</li>
+    <% end %>
+    <% if @game.puzzlebox_has %>
+      <li>Puzzle Box</li>
+    <% end %>
+    <% if @game.key_has %>
+      <li>Key</li>
+    <% end %>
+  </ul>
+</div>
 
 

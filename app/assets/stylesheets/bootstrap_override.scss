@@ -48,6 +48,48 @@ nav {
   padding-left: 14px;
 }
 
+.in.collapse+a.btn.showdetails:before
+{
+    font-size: 16px;
+    font-weight: 500;
+    content:'Hide Room Description';
+}
+.collapse+a.btn.showdetails:before
+{
+    font-size: 16px;
+    font-weight: 500;
+    content:'Show Room Description';
+}
+
+.room_image_box {
+  position: relative;
+  width: 100%;
+  margin-bottom: 78%;
+}
+
+.room_changes_box {
+  position: relative;
+  width: 100%;
+  /*margin-bottom: 12px;*/
+  z-index: 1;
+}
+
+.room_images {
+  /*opacity: 0.5;*/
+  width: 100%;
+  position: absolute;
+
+}
+
+.room_changes {
+  /*position: absolute;*/
+ 
+}
+
+
+
+
+
 
 
 
