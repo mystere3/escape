@@ -12,6 +12,24 @@
   <% if @game.puzzlebox_has %>
     <%= image_tag("puzzlebox_has.png", class: "room_images") %>
   <% end %>
+  <% if @game.mop_has %>
+    <%= image_tag("mop_has.png", class: "room_images") %>
+  <% end %>
+  <% if @game.desk_open %>
+    <%= image_tag("desk_open.png", class: "room_images") %>
+  <% end %>
+  <% if @game.knife_has %>
+    <%= image_tag("knife_has.png", class: "room_images") %>
+  <% end %>
+  <% if @game.pen_has %>
+    <%= image_tag("pen_has.png", class: "room_images") %>
+  <% end %>
+  <% if !@game.outlets_on %>
+    <%= image_tag("outlets_off.png", class: "room_images") %>
+  <% end %>
+  <% if !@game.floor_wet %>
+    <%= image_tag("floor_dry.png", class: "room_images") %>
+  <% end %>
 </div>
 
 
