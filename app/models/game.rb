@@ -802,7 +802,14 @@ class Game < ActiveRecord::Base
     if self.lights_on == false
       return "You trip the breaker for the lights. At the same instant that the lights go out, a blinding blast of electricity blasts from the circuit box. The electricity that courses violently through you is nowhere near enough to kill you, but that doesn’t matter. The jolt has thrown you back and you find yourself on the floor. You are completely disoriented and this windowless room is utterly devoid of light. You fact that you don’t even see light from below the doors hints that the extent of the circuit boxes influence may be long indeed. The banging on the door has ceased. Instead, you hear the deadbolt retract, and the door open. The nameless horror approaches and the dry clicks of its breath almost sound like cackling. This is the end. "
     elsif self.door_open
-      return "You open the door to a hallway identical to the one that led you in to the room. You hear the horror finally getting past its obstacle as well, as the door keeping him from the room blasts into splinters. You don’t hesitate, you flee again. You don’t try the doors you pass, you assume they are locked, just like the ones before. Ahead, the hallway turns to the left. You hope that turning that corner will reveal some way out, or some way to fight. This has to end one way or another. The horror pursues, you feel it in your bones. This can’t be hopeless, this can’t be futile…can it?"
+      ending = "You open the door to a hallway identical to the one that led you in to the room. "
+      if self.horror_in_room
+        ending << "The horror continues to pursue. "
+      else
+        ending << "You hear the horror getting past its obstacles as well, as the door keeping him from the room blasts into splinters. "
+      end
+      ending << "You don’t hesitate, you flee again. You don’t try the doors you pass, you assume they are locked, just like the ones before. Ahead, the hallway turns to the left. You hope that turning that corner will reveal some way out, or some way to fight. This has to end one way or another. The horror pursues, you feel it in your bones. This can’t be hopeless, this can’t be futile…can it?" 
+      return ending
     elsif self.turns_remain <= 0 && self.end_count <= 0
       if self.horror_staggered && self.horror_stabbed
         return "You feel like you’ve been here before. You have no idea how many times. Face to face with this nameless horror. Endlessly pursued. Sometimes you manage to flee for longer, sometimes you manage to fight back for a while. But it always ends this way. Face to face with the nameless horror. Terror sweats pour from your pores. Not because of whats about to happen when the horror finally acquires you again, but because of what you’re sure is going to happen after. Is this hell? Is it purgatory? A dream? Or some kind of madness? Or are you wrong about all this happening before? You shouldn’t trust your fear addled brain about anything. But you feel certain, as the horror envelopes you, that the sweat on your body will still be there when you ‘wake up’ in the bed, face to face with the horror again. As if it never left."
