@@ -1,69 +1,70 @@
-<div class="container">
+<div class="container game-container">
 
   <div class="row">
-    <div class="room_image_box col-xs-offset-1 col-xs-10 col-sm-offset-0 col-sm-6">
-      <%= image_tag("Room.png", class: "room_images") %>
+  <!-- ROOM IMAGE & ALERTS -->
+    <div>
+      <div class="room_image_box col-xs-offset-1 col-xs-10 col-sm-offset-0 col-sm-6">
+        <%= image_tag("Room.png", class: "room_images") %>
 
-      <% if @game.paper_has %>
-        <%= image_tag("paper_has.png", class: "room_images") %>
-      <% elsif @game.paper_content.length > 0 %>
-        <%= image_tag("paper_content.png", class: "room_images") %>
-      <% end %>
-
-      <% if @game.puzzlebox_has %>
-        <%= image_tag("puzzlebox_has.png", class: "room_images") %>
-      <% elsif @game.puzzlebox_open %>
-        <%= image_tag("puzzlebox_open.png", class: "room_images") %>
-      <% end %>
-
-      <% if @game.mop_has %>
-        <%= image_tag("mop_has.png", class: "room_images") %>
-      <% end %>
-
-      <% if @game.desk_open %>
-        <%= image_tag("desk_open.png", class: "room_images") %>
-      <% end %>
-      <% if @game.knife_has %>
-        <%= image_tag("knife_has.png", class: "room_images") %>
-      <% end %>
-      <% if @game.pen_has %>
-        <%= image_tag("pen_has.png", class: "room_images") %>
-      <% end %>
-
-      <% if !@game.outlets_on && @game.floor_wet%>
-        <%= image_tag("outlets_off.png", class: "room_images") %>
-      <% elsif !@game.floor_wet %>
-        <%= image_tag("floor_dry.png", class: "room_images") %>
-      <% end %>
-
-      <% if @game.gloves_has %>
-        <%= image_tag("gloves_has.png", class: "room_images") %>
-      <% end %>
-
-      <% if @game.glassbox_open %>
-        <%= image_tag("glassbox_open.png", class: "room_images") %>
-      <% end %>
-
-      <% if @game.circuitbox_open %>
-        <%= image_tag("circuitbox_open.png", class: "room_images") %>
-      <% end %>
-
-      <% if @game.turns_remain <= 2 %>
-        <% if @game.turns_remain <= 1 %>
-          <%= image_tag("horror_in_room.png", class: "room_images") %>
-        <% else %>
-          <%= image_tag("entrance_open.png", class: "room_images") %>
+        <% if @game.paper_has %>
+          <%= image_tag("paper_has.png", class: "room_images") %>
+        <% elsif @game.paper_content.length > 0 %>
+          <%= image_tag("paper_content.png", class: "room_images") %>
         <% end %>
-      <% end %>
 
-      <% if @game.door_open %>
-        <%= image_tag("exit_open.png", class: "room_images") %>
-      <% end %>
-    </div>
+        <% if @game.puzzlebox_has %>
+          <%= image_tag("puzzlebox_has.png", class: "room_images") %>
+        <% elsif @game.puzzlebox_open %>
+          <%= image_tag("puzzlebox_open.png", class: "room_images") %>
+        <% end %>
 
-    <div class="col-xs-12 col-sm-6">
-      <!-- GAME ALERTS -->
-      <div class="col-sm-12">
+        <% if @game.mop_has %>
+          <%= image_tag("mop_has.png", class: "room_images") %>
+        <% end %>
+
+        <% if @game.desk_open %>
+          <%= image_tag("desk_open.png", class: "room_images") %>
+        <% end %>
+        <% if @game.knife_has %>
+          <%= image_tag("knife_has.png", class: "room_images") %>
+        <% end %>
+        <% if @game.pen_has %>
+          <%= image_tag("pen_has.png", class: "room_images") %>
+        <% end %>
+
+        <% if !@game.outlets_on && @game.floor_wet%>
+          <%= image_tag("outlets_off.png", class: "room_images") %>
+        <% elsif !@game.floor_wet %>
+          <%= image_tag("floor_dry.png", class: "room_images") %>
+        <% end %>
+
+        <% if @game.gloves_has %>
+          <%= image_tag("gloves_has.png", class: "room_images") %>
+        <% end %>
+
+        <% if @game.glassbox_open %>
+          <%= image_tag("glassbox_open.png", class: "room_images") %>
+        <% end %>
+
+        <% if @game.circuitbox_open %>
+          <%= image_tag("circuitbox_open.png", class: "room_images") %>
+        <% end %>
+
+        <% if @game.turns_remain <= 2 %>
+          <% if @game.turns_remain <= 1 %>
+            <%= image_tag("horror_in_room.png", class: "room_images") %>
+          <% else %>
+            <%= image_tag("entrance_open.png", class: "room_images") %>
+          <% end %>
+        <% end %>
+
+        <% if @game.door_open %>
+          <%= image_tag("exit_open.png", class: "room_images") %>
+        <% end %>
+      </div>
+
+      <!-- ALERTS -->
+      <div class="col-xs-offset-1 col-xs-10 col-sm-offset-0 col-sm-6">
         <% if flash[:alert] %>
           <div class="alert alert-success alert-dismissible">
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -89,50 +90,48 @@
           </div>
         <% end %>
       </div>
-
-      <div class="btn-group">
-        <button type="button" class="btn btn-primary">Action</button>
-        <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-          <span class="caret"></span>
-          <span class="sr-only">Toggle Dropdown</span>
-        </button>
-        <ul class="dropdown-menu" role="menu">
-          <li><a href="#">Action</a></li>
-          <li><a href="#">Another action</a></li>
-          <li><a href="#">Something else here</a></li>
-          <li class="divider"></li>
-          <li><a href="#">Separated link</a></li>
-        </ul>
-      </div>
-
-      <!-- GAME FORM -->
-      <div class="col-sm-12">
-        <%= form_tag('/act_on_object', method: :get) do %>
-          <table>
-            <tr>
-              <td><%= label_tag 'Select Action' %></td>
-              <td><%= label_tag 'Select Object' %></td>
-              <td><%= label_tag 'Optionally, select what to use object on' %></td>
-            </tr>
-            <tr>
-              <td><%= select_tag(:action_select, options_for_select([["Get", :get], ["Use", :use], ["Open", :open], ["Inspect", :inspect]])) %></td>
-              <td><%= select_tag(:object_select, options_for_select([["Gloves", :gloves], ['Mop', :mop], ['Knife', :knife], ["Door", :door], ["Desk", :desk], ["Pen", :pen], ["Paper", :paper], ["Key", :key], ["Glass Box", :glassbox], ["Circuit Box", :circuitbox], ["Outlet", :outlet], ["Puzzle Box", :puzzlebox], ["Nameless Horror", :horror]])) %></td>
-              <td><%= select_tag(:use_on, options_for_select([['', nil], ["Gloves", :gloves], ['Mop', :mop], ['Knife', :knife], ["Door", :door], ["Desk", :desk], ["Pen", :pen], ["Paper", :paper], ["Key", :key], ["Glass Box", :glassbox], ["Circuit Box", :circuitbox], ["Outlet", :outlet], ["Puzzle Box", :puzzlebox], ["Nameless Horror", :horror], ["Puddle", :puddle]])) %></td>
-            </tr>
-
-
-            <%= hidden_field_tag :game_id, params[:id] %>
-
-            <tr><td><%= submit_tag 'Commit Action' %></td></tr>
-          </table>
-        <% end %>
-      </div>
     </div>
   </div>
 
-  <!-- ROOM DESCRIPTION -->
   <div class="row">
-    <div class="span4 collapse-group col-sm-12">
+    <!-- GAME FORM -->
+    <div class="col-xs-offset-1 col-xs-10 col-sm-offset-0 col-sm-6 game_box">
+      <%= form_tag('/act_on_object', method: :get, class: 'form-horizontal') do %>
+        <div class="form-group">
+          <%= label_tag 'Select Action', nil, class: 'col-xs-5 form_labels' %>
+          
+          <div class="col-xs-7">
+            <%= select_tag(:action_select, options_for_select([["Get", :get], ["Use", :use], ["Open", :open], ["Inspect", :inspect]]), class: "btn btn-primary") %>
+          </div>
+        </div>
+        <div class="form-group">
+          <%= label_tag 'Select Object', nil, class: 'col-xs-5 form_labels' %>
+          
+          <div class="col-xs-7">
+            <%= select_tag(:object_select, options_for_select([["Gloves", :gloves], ['Mop', :mop], ['Knife', :knife], ["Door", :door], ["Desk", :desk], ["Pen", :pen], ["Paper", :paper], ["Key", :key], ["Glass Box", :glassbox], ["Circuit Box", :circuitbox], ["Outlet", :outlet], ["Puzzle Box", :puzzlebox], ["Nameless Horror", :horror]]), class: "btn btn-primary") %>
+          </div>
+        </div>
+        <div class="form-group">
+          <%= label_tag 'Use object on (optional)', nil, class: 'col-xs-5 form_labels' %>
+          
+          <div class="col-xs-7">
+            <%= select_tag(:use_on, options_for_select([['', nil], ["Gloves", :gloves], ['Mop', :mop], ['Knife', :knife], ["Door", :door], ["Desk", :desk], ["Pen", :pen], ["Paper", :paper], ["Key", :key], ["Glass Box", :glassbox], ["Circuit Box", :circuitbox], ["Outlet", :outlet], ["Puzzle Box", :puzzlebox], ["Nameless Horror", :horror], ["Puddle", :puddle]]), class: "btn btn-primary") %>
+          </div>
+        </div>
+        
+        <%= hidden_field_tag :game_id, params[:id] %>
+
+        <div class="form-group">
+          <%= label_tag '', nil, class: 'col-xs-5 form_labels' %>
+          
+          <div class="col-xs-7">
+            <%= submit_tag 'Commit Action', class: "btn btn-primary" %>
+          </div>
+        </div>          
+      <% end %>
+    </div>
+
+    <div class="col-xs-offset-1 col-xs-10 col-sm-offset-0 col-sm-6">
       <div class="collapse" id="viewdetails">
         <p><%= @game.room_description %></p>
         <p><%= @game.door_description %></p>
@@ -141,40 +140,38 @@
         <p><%= @game.glassbox_description %></p>
         <p><%= @game.circuitbox_description %></p>
       </div>
-      <a class="btn btn-info showdetails" data-toggle="collapse" data-target="#viewdetails"></a>
+      <a class="btn btn-primary showdetails" data-toggle="collapse" data-target="#viewdetails"></a>
+
+      <table class="table table-condensed table-hover">
+        <thead>
+          <tr><th>Inventory</th></tr>
+        </thead>
+        <tbody>
+          <% if @game.gloves_has %>
+            <tr><td>Gloves</td></tr>
+          <% end %>
+          <% if @game.mop_has %>
+            <tr><td>Mop</td></tr>
+          <% end %>
+          <% if @game.knife_has %>
+            <tr><td>Knife</td></tr>
+          <% end %>
+          <% if @game.pen_has %>
+            <tr><td>Pen</td></tr>
+          <% end %>
+          <% if @game.paper_has %>
+            <tr><td>Paper</td></tr>
+          <% end %>
+          <% if @game.puzzlebox_has %>
+            <tr><td>Puzzle Box</td></tr>
+          <% end %>
+          <% if @game.key_has %>
+            <tr><td>Key</td></tr>
+          <% end %>
+        </tbody>
+      </table>
     </div>
   </div>
-
-  <!-- INVENTORY -->
-  <div class="row">
-    <div class="col-sm-12">
-      Your inventory:
-      <ul>
-        <% if @game.gloves_has %>
-          <li>Gloves</li>
-        <% end %>
-        <% if @game.mop_has %>
-          <li>Mop</li>
-        <% end %>
-        <% if @game.knife_has %>
-          <li>Knife</li>
-        <% end %>
-        <% if @game.pen_has %>
-          <li>Pen</li>
-        <% end %>
-        <% if @game.paper_has %>
-          <li>Paper</li>
-        <% end %>
-        <% if @game.puzzlebox_has %>
-          <li>Puzzle Box</li>
-        <% end %>
-        <% if @game.key_has %>
-          <li>Key</li>
-        <% end %>
-      </ul>
-    </div>
-  </div>
-
 </div>
 
 

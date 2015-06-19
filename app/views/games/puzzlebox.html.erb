@@ -1,3 +1,27 @@
+<div class="container game-container">
+  <div class="row">
+
+    <div>
+      <div class="room_image_box col-xs-offset-1 col-xs-10 col-sm-offset-0 col-sm-6">
+        <%= image_tag("puzzlebox.png", class: "room_images") %>
+      </div>
+      <div class="col-xs-offset-1 col-xs-10 col-sm-offset-0 col-sm-6">
+        The puzzle box can't be opened but there is no keyed lock. 
+        On the top of the box is a picture of a key and five buttons. 
+        The buttons are displayed above. Type the letters in the order you press them then press the 'ENTER' button.
+        <div class="form-group"></div>
+          <%= form_tag('/act_on_object', method: :get) do %>
+            <%= text_field :puzzlebox, :attempt, autocomplete: "off" %>
+            <%= hidden_field_tag :game_id, params[:id] %>
+            <%= submit_tag 'ENTER', class: "btn btn-primary" %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 <h1>Puzzlebox</h1>
 
 The puzzle box can't be opened but there is no lock.<br>

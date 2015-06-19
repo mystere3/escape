@@ -5,7 +5,11 @@
 
 
 
-body { padding-top: 70px; }
+body { 
+  padding-top: 70px; 
+  /*background-image: url('/assets/eye_bg_crop.jpg')*/
+  /*background-color: #888;*/ /* <<-- CANT GET TO WORK*/
+}
 
 nav {
   ul.nav {
@@ -64,12 +68,12 @@ nav {
 .room_image_box {
   position: relative;
   width: 90%;
-  margin-bottom: 58%;
+  margin-bottom: 60%;
 }
 
 @media (min-width: 768px) {
   .room_image_box {
-    margin-bottom: 35%;
+    margin-bottom: 38%;
     width: 100%
   }
   .room_changes_box {
@@ -78,19 +82,18 @@ nav {
   .room_images {
     width: 100%
   }
-
 }
 
 .room_changes_box {
   position: relative;
-  width: 90%;
+  width: 93%;
   /*margin-bottom: 12px;*/
   z-index: 1;
 }
 
 .room_images {
   /*opacity: 0.5;*/
-  width: 90%;
+  width: 93%;
   position: absolute;
 
 }
@@ -104,11 +107,25 @@ nav {
   border: 1px blue solid;
 }
 
+.form_labels {
+  /*text-align: right;*/
+}
 
+.game_box {
+  background-color: #CCC;
+  padding: 12px;
+  border-radius: 7px;
+  margin-bottom: 12px;
+}
 
+.room-descrip {
+  padding-bottom: 12px;
+  padding-top: 9px;
+}
 
-
-
+.game-container {
+  /*background-color: #888;*/
+}
 
 
 
